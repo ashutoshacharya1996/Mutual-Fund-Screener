@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quant Quantamental Fund — Analysis Report | 25 Jun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a; --surface: #111827; --surface2: #1a2235; --border: #1e2d45;
+    --text: #e2e8f0; --muted: #64748b; --accent: #38bdf8; --accent2: #818cf8;
+    --green: #34d399; --red: #f87171; --yellow: #fbbf24; --orange: #fb923c; --purple: #c084fc;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1a0e1e 0%, #111827 100%); border-bottom: 1px solid var(--border); padding: 28px 40px; }
+  .header-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: var(--muted); }
+  .verdict-chip { display: inline-block; margin-top: 12px; padding: 6px 16px; border-radius: 20px; font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  .verdict-chip.caution { background: rgba(248,113,113,0.12); border: 1px solid var(--red); color: var(--red); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.05em; }
+  .card.alert { border-color: rgba(248,113,113,0.4); background: linear-gradient(135deg, rgba(248,113,113,0.05) 0%, var(--surface) 100%); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } .header { padding: 20px 16px; } .container { padding: 20px 12px; } }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); font-size: 12px; }
+  .kv .v { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+  .kv .v.green { color: var(--green); } .kv .v.red { color: var(--red); } .kv .v.yellow { color: var(--yellow); } .kv .v.accent { color: var(--accent); }
+  .regime-bar-wrap { margin-bottom: 10px; }
+  .regime-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .regime-bar-label .rscore { font-family: var(--mono); color: var(--accent); font-weight: 700; }
+  .regime-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .regime-bar-fill { height: 100%; border-radius: 3px; }
+  .scenario { background: var(--surface2); border-radius: 6px; padding: 14px; margin-bottom: 10px; border-left: 3px solid; }
+  .scenario.A { border-color: var(--green); } .scenario.B { border-color: var(--yellow); } .scenario.C { border-color: var(--red); }
+  .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .scenario-name { font-weight: 600; font-size: 13px; }
+  .scenario-prob { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+  .scenario.A .scenario-prob { color: var(--green); } .scenario.B .scenario-prob { color: var(--yellow); } .scenario.C .scenario-prob { color: var(--red); }
+  .scenario-macro { font-size: 11px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+  .ret-single { background: rgba(10,14,26,0.5); border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .ret-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .ret-val { font-family: var(--mono); font-size: 15px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 6px 8px; border-bottom: 1px solid rgba(30,45,69,0.4); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .wt { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  .sector-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-family: var(--mono); }
+  .tag-banks { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .tag-energy { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .tag-conglom { background: rgba(192,132,252,0.15); color: var(--purple); }
+  .tag-nbfc { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .ret-sc { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+  .ret-sc.A { color: var(--green); } .ret-sc.B { color: var(--yellow); } .ret-sc.C { color: var(--red); }
+  .pwe-box { background: var(--surface2); border-radius: 8px; padding: 20px; text-align: center; border: 1px solid rgba(248,113,113,0.3); }
+  .pwe-fund { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .pwe-val { font-size: 36px; font-weight: 800; font-family: var(--mono); color: var(--red); }
+  .pwe-label { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-family: var(--mono); margin: 2px; }
+  .tag.green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .tag.red { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag.blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .verdict-banner { background: linear-gradient(135deg, rgba(248,113,113,0.08) 0%, rgba(30,14,30,0.5) 100%); border: 1px solid rgba(248,113,113,0.4); border-radius: 10px; padding: 28px 32px; margin-bottom: 16px; text-align: center; }
+  .verdict-banner .verdict { font-size: 32px; font-weight: 800; color: var(--red); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .verdict-banner .verdict-sub { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+  .verdict-banner .reason { font-size: 13px; color: var(--text); line-height: 1.7; max-width: 720px; margin: 0 auto; }
+  .eli15 { background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(129,140,248,0.04) 100%); border: 1px solid rgba(56,189,248,0.2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; }
+  .eli15-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .eli15-label .emoji { font-size: 14px; }
+  .eli15 p { font-size: 13px; color: #cbd5e1; line-height: 1.75; margin-bottom: 6px; }
+  .eli15 p:last-child { margin-bottom: 0; }
+  .eli15 strong { color: var(--text); }
+  .eli15 .highlight { color: var(--green); font-weight: 600; }
+  .eli15 .warn { color: var(--yellow); font-weight: 600; }
+  .eli15 .danger { color: var(--red); font-weight: 600; }
+  .alert-box { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.35); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; }
+  .alert-box .alert-title { font-family: var(--mono); font-size: 12px; color: var(--red); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.05em; }
+  .alert-box p { font-size: 12px; color: #cbd5e1; line-height: 1.7; margin-bottom: 4px; }
+  .provenance-note { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 24px; font-family: var(--mono); }
+  .provenance-note strong { color: var(--text); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  .sector-bar-wrap { margin-bottom: 8px; }
+  .sector-bar-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 12px; }
+  .sector-bar-label .sname { color: var(--muted); }
+  .sector-bar-label .spct { font-family: var(--mono); color: var(--text); font-size: 11px; }
+  .sector-bar-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .sector-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .concentration-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 6px; padding: 6px 12px; font-family: var(--mono); font-size: 12px; color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">MUTUAL FUND SCREENER &nbsp;·&nbsp; ASHUTOSH, 29, BHUBANESWAR &nbsp;·&nbsp; FIRE AGE 40 &nbsp;·&nbsp; RUN DATE: 25 JUN 2026 &nbsp;·&nbsp; CLAUDE-SONNET-4-6</div>
+  <h1>Quant Quantamental Fund</h1>
+  <div class="subtitle">Single-fund analysis &nbsp;·&nbsp; Regime-adjusted &nbsp;·&nbsp; 11-year FIRE horizon &nbsp;·&nbsp; Three-scenario PWE</div>
+  <div class="verdict-chip caution">HOLD WITH CAUTION — GOVERNANCE OVERHANG</div>
+</div>
+
+<div class="container">
+
+  <!-- GOVERNANCE ALERT -->
+  <div class="alert-box">
+    <div class="alert-title">MATERIAL RISK ALERT — SEBI FRONT-RUNNING INVESTIGATION (JUN 2024)</div>
+    <p>SEBI launched an investigation into suspected front-running at Quant AMC in June 2024. As of the analysis date (Jun 2026), this investigation's resolution status is uncertain. Front-running — where fund managers trade on foreknowledge of their own fund's upcoming orders — is a direct breach of fiduciary duty and can result in regulatory sanctions, forced management changes, or fund restrictions. This is a hard confidence cap on this fund's rating regardless of return numbers.</p>
+    <p><strong>Impact on this analysis:</strong> Manager score capped at 6/10. PWE carries a −0.5% governance penalty. No higher than HOLD rating possible until investigation conclusively resolved.</p>
+  </div>
+
+  <!-- MACRO CONTEXT -->
+  <div class="section-label">AGENT A &mdash; MACRO CONTEXT (25 JUN 2026)</div>
+  <div class="card">
+    <div class="card-title">ACTIVE REGIME — GROWTH EXPANSION (PRIMARY SCORE 72/100)</div>
+    <div class="grid2">
+      <div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Growth Expansion <strong style="color:var(--green);font-size:10px">PRIMARY</strong></span><span class="rscore">72</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:72%;background:linear-gradient(90deg,#34d399,#059669)"></div></div></div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Domestic Capex Boom</span><span class="rscore">68</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:68%;background:linear-gradient(90deg,#38bdf8,#0284c7)"></div></div></div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Stagflation Risk</span><span class="rscore">38</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:38%;background:linear-gradient(90deg,#fbbf24,#d97706)"></div></div></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">GDP FY26</span><span class="v green">7.7% (accelerating)</span></div>
+        <div class="kv"><span class="k">CPI May 2026</span><span class="v yellow">3.93% (5-mo rising trend)</span></div>
+        <div class="kv"><span class="k">RBI Repo</span><span class="v accent">5.25% Neutral / Holding</span></div>
+        <div class="kv"><span class="k">Nifty PE</span><span class="v green">20.02x</span></div>
+        <div class="kv"><span class="k">Regime Confidence</span><span class="v accent">73 / 100 — Medium-High</span></div>
+        <div class="kv"><span class="k">Stagflation Tail Risk</span><span class="v yellow">20% probability</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FORWARD SCENARIOS</div>
+    <div class="scenario A">
+      <div class="scenario-header"><span class="scenario-name">Scenario A — Steady Compounding</span><span class="scenario-prob">50%</span></div>
+      <div class="scenario-macro">GDP 7.5% · CPI 4.2% · RBI holds · G-Sec 6.9% · USD/INR 92 · Brent $70</div>
+      <div class="ret-single"><span class="ret-label">QUANT QUANTAMENTAL — RANGE</span><span class="ret-val" style="color:var(--green)">12% – 22% &nbsp;<span style="font-size:12px;color:var(--muted)">exp 16%</span></span></div>
+    </div>
+    <div class="scenario B">
+      <div class="scenario-header"><span class="scenario-name">Scenario B — Inflation Creep</span><span class="scenario-prob">30%</span></div>
+      <div class="scenario-macro">GDP 6.8% · CPI 5.3% · RBI hikes +25bp · G-Sec 7.5% · USD/INR 97 · Brent $82</div>
+      <div class="ret-single"><span class="ret-label">QUANT QUANTAMENTAL — RANGE</span><span class="ret-val" style="color:var(--yellow)">0% – 8% &nbsp;<span style="font-size:12px;color:var(--muted)">exp 3%</span></span></div>
+    </div>
+    <div class="scenario C">
+      <div class="scenario-header"><span class="scenario-name">Scenario C — Global Risk-Off</span><span class="scenario-prob">20%</span></div>
+      <div class="scenario-macro">GDP 6.2% · CPI 5.8% · RBI hikes · G-Sec 8.0% · USD/INR 100 · Brent $90</div>
+      <div class="ret-single"><span class="ret-label">QUANT QUANTAMENTAL — RANGE</span><span class="ret-val" style="color:var(--red)">−10% – 0% &nbsp;<span style="font-size:12px;color:var(--muted)">exp −5%</span></span></div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE ECONOMIC BACKDROP</div>
+    <p>Same macro picture as the other reports — India's doing well, growth is strong. The key thing to understand for <em>this specific fund</em> is that it holds a lot of Adani stocks and renewable energy, which are <strong>very sensitive to global mood</strong>. When the world is optimistic (Scenario A), these holdings fly. When the world gets scared (Scenario C), they can crash hard.</p>
+    <p>That's why the Scenario C range for this fund goes all the way to −10%. The macro is fine right now, but this fund has more boom-bust built into it than others.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT B -->
+  <div class="section-label">AGENT B &mdash; FUND MANAGER ASSESSMENT</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">FUND PROFILE</div>
+      <div class="kv"><span class="k">AUM</span><span class="v yellow">₹1,569 cr (small)</span></div>
+      <div class="kv"><span class="k">Expense Ratio (direct)</span><span class="v yellow">0.79%</span></div>
+      <div class="kv"><span class="k">Category</span><span class="v">Equity — Other (Flexi Cap / Quant)</span></div>
+      <div class="kv"><span class="k">Benchmark</span><span class="v">Nifty 500 TRI</span></div>
+      <div class="kv"><span class="k">Inception</span><span class="v">May 2021 (~5 years)</span></div>
+      <div class="kv"><span class="k">1Y Return</span><span class="v green">12.33%</span></div>
+      <div class="kv"><span class="k">3Y Return</span><span class="v green">19.70%</span></div>
+      <div class="kv"><span class="k">5Y Return (since inception)</span><span class="v green">21.14% CAGR</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">MANAGER PROFILE</div>
+      <div class="kv"><span class="k">Lead Manager</span><span class="v">Ankit Pande</span></div>
+      <div class="kv"><span class="k">Founder / CIO</span><span class="v">Sandeep Tandon</span></div>
+      <div class="kv"><span class="k">Total team size (fund)</span><span class="v yellow">7 named managers</span></div>
+      <div class="kv"><span class="k">Approach</span><span class="v">Quant models + Fundamental overlay</span></div>
+      <div class="kv"><span class="k">Rebalancing</span><span class="v yellow">High frequency (factor-driven)</span></div>
+      <div class="kv"><span class="k">Manager Score</span><span class="v red">6 / 10 (SEBI investigation cap)</span></div>
+      <div class="kv"><span class="k">Governance Flag</span><span class="v red">SEBI front-running probe Jun 2024</span></div>
+      <div class="kv"><span class="k">Key Person Risk</span><span class="v yellow">Medium (Tandon central)</span></div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="tag red">SEBI front-running investigation — unresolved governance risk</div>
+    <div class="tag red">Adani combined ~18% — binary concentration risk</div>
+    <div class="tag red">High turnover from algo rebalancing = tax drag on returns</div>
+    <div class="tag yellow">Small AUM ₹1,569 cr — liquidity at risk if redemptions spike</div>
+    <div class="tag green">Strong 5Y and 3Y returns — model performs in trending markets</div>
+    <div class="tag green">Outperformed Nifty 500 consistently</div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE FUND'S APPROACH</div>
+    <p>"Quantamental" means the fund uses <strong>computer models to screen thousands of stocks</strong> and rank them by factors like value, growth, and quality — then applies a human judgment layer on top. Think of it as a very sophisticated filter rather than a traditional analyst picking stocks one by one.</p>
+    <p>In theory, this removes emotion from investing. In practice, models are only as good as the data and assumptions fed into them. This fund's models clearly worked well from 2021–2026 — but <strong>the SEBI front-running investigation is a red flag that has nothing to do with the model</strong>. It's a question of whether someone at the fund was illegally trading ahead of their own orders. That's not a returns issue — it's a trust issue.</p>
+    <p><span class="danger">The 18% Adani concentration</span> (Adani Enterprises + Adani Green Energy) is the biggest portfolio risk. Two stocks from one conglomerate that has already survived one near-collapse (Hindenburg 2023) — if anything goes wrong there again, this fund takes a large hit.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT C -->
+  <div class="section-label">AGENT C &mdash; HOLDINGS LOOK-THROUGH</div>
+
+  <div style="margin-bottom:12px;display:flex;justify-content:center;">
+    <div class="concentration-badge">Adani Enterprises (~8.75%) + Adani Green Energy (~9%) = ~18% in one conglomerate</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TOP HOLDINGS (Jun 2026)</div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>HOLDING</th><th>WT%</th><th>SECTOR</th><th>Sc A</th><th>Sc B</th><th>Sc C</th><th>NOTE</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>HDFC Bank</td><td class="wt">8.75%</td><td><span class="sector-tag tag-banks">PrivateBanks</span></td><td class="ret-sc A">[15,21]</td><td class="ret-sc B">[-3,4]</td><td class="ret-sc C">[-9,-2]</td><td style="font-size:10px;color:var(--muted)">Stable anchor</td></tr>
+        <tr><td>2</td><td>Piramal Finance</td><td class="wt">8.31%</td><td><span class="sector-tag tag-nbfc">NBFC/Finance</span></td><td class="ret-sc A">[16,22]</td><td class="ret-sc B">[-5,2]</td><td class="ret-sc C">[-12,-4]</td><td style="font-size:10px;color:var(--red)">Rate-sensitive NBFC</td></tr>
+        <tr><td>3</td><td>Adani Enterprises</td><td class="wt">~8.5%</td><td><span class="sector-tag tag-conglom">Conglomerate</span></td><td class="ret-sc A">[18,28]</td><td class="ret-sc B">[-6,4]</td><td class="ret-sc C">[-18,-6]</td><td style="font-size:10px;color:var(--red)">High vol, post-Hindenburg</td></tr>
+        <tr><td>4</td><td>Adani Green Energy</td><td class="wt">~9.0%</td><td><span class="sector-tag tag-energy">Renewables</span></td><td class="ret-sc A">[20,32]</td><td class="ret-sc B">[-8,2]</td><td class="ret-sc C">[-20,-8]</td><td style="font-size:10px;color:var(--red)">High PE, rate-sensitive</td></tr>
+        <tr><td colspan="8" style="color:var(--muted);font-size:11px;padding-top:10px">Other significant holdings: HDFC Life Insurance · Kotak Mahindra Bank · Yes Bank · Exide Industries · ITC · Reliance Industries</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SECTOR &amp; SIZE ALLOCATION</div>
+    <div class="grid2">
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:8px">SECTORS</div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Financial Services</span><span class="spct">27.67%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:27.7%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Services</span><span class="spct">15.16%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:15.2%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Capital Goods</span><span class="spct">11.90%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:11.9%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Energy</span><span class="spct">10.14%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:10.1%"></div></div></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:8px">SIZE SPLIT</div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Mid Cap</span><span class="spct">49.45%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:49.5%;background:linear-gradient(90deg,var(--accent2),#6366f1)"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Large Cap</span><span class="spct">33.15%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:33.2%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Small Cap / Other</span><span class="spct">17.41%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:17.4%;background:linear-gradient(90deg,var(--yellow),var(--orange))"></div></div></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="tag red">Adani combined ~18% — single conglomerate binary risk</div>
+      <div class="tag yellow">Mandate Integrity 5/10 — concentration + algo-driven drift</div>
+      <div class="tag blue">Mid-cap heavy (49%) — captures growth but adds volatility</div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT'S INSIDE THE FUND</div>
+    <p>HDFC Bank is the largest position at 8.75% — that's a solid, boring bank, no problems there. But then the next two big positions are <strong>Adani Enterprises and Adani Green Energy combined at ~18%</strong>. That's nearly 1 in every 5 rupees you put into this fund sitting in one family's businesses.</p>
+    <p>Adani stocks can double in a good year and fall 50% in a bad one. In January 2023, they fell 60% in a single month after the Hindenburg report. The fund survived that partly because Adani stocks recovered strongly. But <span class="danger">if that happens again in Scenario B or C, this fund takes a very large hit</span> — not because of the macro, but because of that one concentrated bet.</p>
+    <p>The Piramal Finance position (8.3%) is also risky in a rising-rate environment — NBFCs (non-banking finance companies) borrow at floating rates and get squeezed when RBI hikes. So in Scenarios B and C, three of the top four holdings get hurt simultaneously.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT D -->
+  <div class="section-label">AGENT D &mdash; FUND SYNTHESIS</div>
+
+  <div style="margin-bottom:20px;display:flex;justify-content:center;">
+    <div class="pwe-box" style="min-width:320px;">
+      <div class="pwe-fund">PROBABILITY-WEIGHTED EXPECTED RETURN</div>
+      <div class="pwe-val">7.40%</div>
+      <div class="pwe-label">0.50×16 + 0.30×3 + 0.20×(−5) − governance penalty 0.50%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SYNTHESIS SCORECARD</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">PWE (pre-adj)</span><span class="v yellow">7.90%</span></div>
+        <div class="kv"><span class="k">Governance Penalty</span><span class="v red">−0.50% (SEBI investigation)</span></div>
+        <div class="kv"><span class="k">PWE (final)</span><span class="v red">7.40% p.a.</span></div>
+        <div class="kv"><span class="k">Downside (Sc C exp)</span><span class="v red">−5%</span></div>
+        <div class="kv"><span class="k">Upside (Sc A exp)</span><span class="v green">16%</span></div>
+        <div class="kv"><span class="k">Return Dispersion</span><span class="v red">21 ppt (Wide)</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Style-Regime Alignment</span><span class="v yellow">Partial (Sc A yes, Sc B/C exposed)</span></div>
+        <div class="kv"><span class="k">Mandate Integrity</span><span class="v red">5/10 — Concentration + Governance</span></div>
+        <div class="kv"><span class="k">Confidence Cap</span><span class="v red">Hard (SEBI investigation)</span></div>
+        <div class="kv"><span class="k">11Y FIRE Multiplier</span><span class="v red">(1.074)^11 = 2.19×</span></div>
+        <div class="kv"><span class="k">₹10L becomes</span><span class="v red">₹21.9L at FIRE</span></div>
+        <div class="kv"><span class="k">Verdict</span><span class="v red">HOLD WITH CAUTION</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-banner">
+    <div class="verdict">HOLD WITH CAUTION</div>
+    <div class="verdict-sub">Not suitable as a core FIRE holding. Small speculative allocation only, if at all.</div>
+    <div class="reason">
+      The fund's return numbers are real — 21% since inception is impressive. But the <strong>SEBI front-running investigation is an unresolved governance question</strong> that cannot be overlooked in a fund you plan to hold for 11 years. The 18% Adani concentration is a binary risk — one adverse event (regulatory, geopolitical, or fresh short-selling attack) could wipe years of gains. High turnover from algorithmic rebalancing also creates an invisible tax drag that erodes the headline return. PWE 7.40% is lower than Axis Mid Cap (9.39%) with significantly higher risk. <strong>Not a fund for a large allocation. Cap exposure at 5–8% of equity if you hold it at all.</strong>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE BOTTOM LINE</div>
+    <p>Here's the honest version: <strong>the returns are impressive but you shouldn't trust them fully.</strong> The SEBI front-running probe means we don't know with certainty whether those returns were generated cleanly or whether someone at the fund was trading on privileged information (which would inflate performance artificially and harm investors).</p>
+    <p>Even setting that aside — <span class="danger">18% in Adani stocks is a lot of eggs in one basket</span>. This isn't a diversified fund; it's a fund that happens to score Adani stocks highly on its model. Models are backward-looking. If Adani faces another governance crisis, this fund takes a direct hit.</p>
+    <p>The returns look great over 5 years. But this fund is like a car that went 0–100 very fast on a good road. <span class="warn">You don't know how it brakes.</span> For your FIRE goal, you want reliable compounding — not a fund where one regulatory event or one conglomerate scandal could set you back 3–4 years.</p>
+    <p><span class="highlight">If you already own it:</span> don't panic, but monitor the SEBI investigation closely and limit it to a small portion of your portfolio. <span class="danger">Don't add more until governance is cleared.</span></p>
+  </div>
+
+  <div class="provenance-note">
+    <strong>DATA PROVENANCE</strong><br>
+    Run date: 25 Jun 2026 · Model: claude-sonnet-4-6 · Macro regime confidence: 73/100 · AUM, returns, manager, holdings: ValueResearch, Groww, INDmoney, Quant AMC official, TickerTape, ClearTax (May–Jun 2026) · SEBI investigation: Business Standard reports Jun 2024 · Adani concentration: multiple sources confirmed · Scenario return ranges: model estimates, Adani positions modeled as high-beta conglomerate.<br><br>
+    <strong>Profile:</strong> Ashutosh · 29 · FIRE age 40 · 11Y runway · Moderate-Aggressive · LTCG 10% / STCG 15% · SIPs never stop
+  </div>
+
+</div>
+</body>
+</html>

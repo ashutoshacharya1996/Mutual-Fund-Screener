@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirae Asset Large & Midcap Fund — Analysis Report | 25 Jun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a; --surface: #111827; --surface2: #1a2235; --border: #1e2d45;
+    --text: #e2e8f0; --muted: #64748b; --accent: #38bdf8; --accent2: #818cf8;
+    --green: #34d399; --red: #f87171; --yellow: #fbbf24; --orange: #fb923c; --purple: #c084fc;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #0d1b2e 0%, #111827 100%); border-bottom: 1px solid var(--border); padding: 28px 40px; }
+  .header-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: var(--muted); }
+  .verdict-chip { display: inline-block; margin-top: 12px; padding: 6px 16px; border-radius: 20px; font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  .verdict-chip.hold { background: rgba(251,191,36,0.12); border: 1px solid var(--yellow); color: var(--yellow); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.05em; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } .header { padding: 20px 16px; } .container { padding: 20px 12px; } }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); font-size: 12px; }
+  .kv .v { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+  .kv .v.green { color: var(--green); } .kv .v.red { color: var(--red); } .kv .v.yellow { color: var(--yellow); } .kv .v.accent { color: var(--accent); }
+  .regime-bar-wrap { margin-bottom: 10px; }
+  .regime-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .regime-bar-label .rscore { font-family: var(--mono); color: var(--accent); font-weight: 700; }
+  .regime-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .regime-bar-fill { height: 100%; border-radius: 3px; }
+  .scenario { background: var(--surface2); border-radius: 6px; padding: 14px; margin-bottom: 10px; border-left: 3px solid; }
+  .scenario.A { border-color: var(--green); } .scenario.B { border-color: var(--yellow); } .scenario.C { border-color: var(--red); }
+  .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .scenario-name { font-weight: 600; font-size: 13px; }
+  .scenario-prob { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+  .scenario.A .scenario-prob { color: var(--green); } .scenario.B .scenario-prob { color: var(--yellow); } .scenario.C .scenario-prob { color: var(--red); }
+  .scenario-macro { font-size: 11px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+  .ret-single { background: rgba(10,14,26,0.5); border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .ret-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .ret-val { font-family: var(--mono); font-size: 15px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 6px 8px; border-bottom: 1px solid rgba(30,45,69,0.4); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .wt { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  .sector-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-family: var(--mono); }
+  .tag-banks { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .tag-energy { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .tag-it { background: rgba(192,132,252,0.15); color: var(--purple); }
+  .tag-health { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-capex { background: rgba(129,140,248,0.15); color: var(--accent2); }
+  .tag-consumer { background: rgba(248,113,113,0.15); color: var(--red); }
+  .ret-sc { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+  .ret-sc.A { color: var(--green); } .ret-sc.B { color: var(--yellow); } .ret-sc.C { color: var(--red); }
+  .pwe-box { background: var(--surface2); border-radius: 8px; padding: 20px; text-align: center; border: 1px solid rgba(251,191,36,0.3); }
+  .pwe-fund { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .pwe-val { font-size: 36px; font-weight: 800; font-family: var(--mono); color: var(--yellow); }
+  .pwe-label { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-family: var(--mono); margin: 2px; }
+  .tag.green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .tag.red { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag.blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .verdict-banner { background: linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(56,189,248,0.05) 100%); border: 1px solid rgba(251,191,36,0.3); border-radius: 10px; padding: 28px 32px; margin-bottom: 16px; text-align: center; }
+  .verdict-banner .verdict { font-size: 32px; font-weight: 800; color: var(--yellow); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .verdict-banner .verdict-sub { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+  .verdict-banner .reason { font-size: 13px; color: var(--text); line-height: 1.7; max-width: 720px; margin: 0 auto; }
+  .eli15 { background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(129,140,248,0.04) 100%); border: 1px solid rgba(56,189,248,0.2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; }
+  .eli15-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .eli15-label .emoji { font-size: 14px; }
+  .eli15 p { font-size: 13px; color: #cbd5e1; line-height: 1.75; margin-bottom: 6px; }
+  .eli15 p:last-child { margin-bottom: 0; }
+  .eli15 strong { color: var(--text); }
+  .eli15 .highlight { color: var(--green); font-weight: 600; }
+  .eli15 .warn { color: var(--yellow); font-weight: 600; }
+  .eli15 .danger { color: var(--red); font-weight: 600; }
+  .provenance-note { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 24px; font-family: var(--mono); }
+  .provenance-note strong { color: var(--text); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  .sector-bar-wrap { margin-bottom: 8px; }
+  .sector-bar-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 12px; }
+  .sector-bar-label .sname { color: var(--muted); }
+  .sector-bar-label .spct { font-family: var(--mono); color: var(--text); font-size: 11px; }
+  .sector-bar-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .sector-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">MUTUAL FUND SCREENER &nbsp;·&nbsp; ASHUTOSH, 29, BHUBANESWAR &nbsp;·&nbsp; FIRE AGE 40 &nbsp;·&nbsp; RUN DATE: 25 JUN 2026 &nbsp;·&nbsp; CLAUDE-SONNET-4-6</div>
+  <h1>Mirae Asset Large &amp; Midcap Fund</h1>
+  <div class="subtitle">Single-fund analysis &nbsp;·&nbsp; Regime-adjusted &nbsp;·&nbsp; 11-year FIRE horizon &nbsp;·&nbsp; Three-scenario PWE</div>
+  <div class="verdict-chip hold">HOLD</div>
+</div>
+
+<div class="container">
+
+  <!-- MACRO CONTEXT -->
+  <div class="section-label">AGENT A &mdash; MACRO CONTEXT (25 JUN 2026)</div>
+  <div class="card">
+    <div class="card-title">ACTIVE REGIME — GROWTH EXPANSION (PRIMARY SCORE 72/100)</div>
+    <div class="grid2">
+      <div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Growth Expansion <strong style="color:var(--green);font-size:10px">PRIMARY</strong></span><span class="rscore">72</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:72%;background:linear-gradient(90deg,#34d399,#059669)"></div></div></div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Domestic Capex Boom</span><span class="rscore">68</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:68%;background:linear-gradient(90deg,#38bdf8,#0284c7)"></div></div></div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Goldilocks</span><span class="rscore">64</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:64%;background:linear-gradient(90deg,#818cf8,#6366f1)"></div></div></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">GDP FY26</span><span class="v green">7.7% (accelerating)</span></div>
+        <div class="kv"><span class="k">CPI May 2026</span><span class="v yellow">3.93% (5-mo rising trend)</span></div>
+        <div class="kv"><span class="k">RBI Repo</span><span class="v accent">5.25% Neutral / Holding</span></div>
+        <div class="kv"><span class="k">Nifty PE</span><span class="v green">20.02x (−14.6% vs 10Y avg)</span></div>
+        <div class="kv"><span class="k">Regime Confidence</span><span class="v accent">73 / 100 — Medium-High</span></div>
+        <div class="kv"><span class="k">Stagflation Tail Risk</span><span class="v yellow">20% probability</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FORWARD SCENARIOS</div>
+    <div class="scenario A">
+      <div class="scenario-header"><span class="scenario-name">Scenario A — Steady Compounding</span><span class="scenario-prob">50%</span></div>
+      <div class="scenario-macro">GDP 7.5% · CPI 4.2% · RBI holds · G-Sec 6.9% · USD/INR 92 · Brent $70</div>
+      <div class="ret-single"><span class="ret-label">MIRAE LARGE &amp; MIDCAP — RANGE</span><span class="ret-val" style="color:var(--green)">10% – 18% &nbsp;<span style="font-size:12px;color:var(--muted)">exp 13.5%</span></span></div>
+    </div>
+    <div class="scenario B">
+      <div class="scenario-header"><span class="scenario-name">Scenario B — Inflation Creep</span><span class="scenario-prob">30%</span></div>
+      <div class="scenario-macro">GDP 6.8% · CPI 5.3% · RBI hikes +25bp · G-Sec 7.5% · USD/INR 97 · Brent $82</div>
+      <div class="ret-single"><span class="ret-label">MIRAE LARGE &amp; MIDCAP — RANGE</span><span class="ret-val" style="color:var(--yellow)">−2% – 7% &nbsp;<span style="font-size:12px;color:var(--muted)">exp 2.5%</span></span></div>
+    </div>
+    <div class="scenario C">
+      <div class="scenario-header"><span class="scenario-name">Scenario C — Global Risk-Off</span><span class="scenario-prob">20%</span></div>
+      <div class="scenario-macro">GDP 6.2% · CPI 5.8% · RBI hikes · G-Sec 8.0% · USD/INR 100 · Brent $90</div>
+      <div class="ret-single"><span class="ret-label">MIRAE LARGE &amp; MIDCAP — RANGE</span><span class="ret-val" style="color:var(--red)">−8% – 0% &nbsp;<span style="font-size:12px;color:var(--muted)">exp −3.5%</span></span></div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE ECONOMIC BACKDROP</div>
+    <p>India is in a <strong>good phase right now</strong> — economy growing fast, inflation manageable, RBI not panicking. Think of it as a clear highway. But mid cap valuations are a bit stretched (30× PE), so returns over the next few years will be more modest than the last 3-4 years. You're not going from 0 to 100 on this highway — more like 60 to 80.</p>
+    <p>The three scenarios are "what happens to this fund if things go well, okay, or badly." The numbers above are what the fund's yearly return might look like in each case. We then combine them by probability to get one realistic number — that's the PWE you'll see below.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT B -->
+  <div class="section-label">AGENT B &mdash; FUND MANAGER ASSESSMENT</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">FUND PROFILE</div>
+      <div class="kv"><span class="k">AUM</span><span class="v accent">₹42,792 cr</span></div>
+      <div class="kv"><span class="k">Expense Ratio (direct)</span><span class="v green">0.49%</span></div>
+      <div class="kv"><span class="k">Category</span><span class="v">Large &amp; Midcap</span></div>
+      <div class="kv"><span class="k">Benchmark</span><span class="v">Nifty Large Midcap 250</span></div>
+      <div class="kv"><span class="k">1Y Return</span><span class="v yellow">6.12%</span></div>
+      <div class="kv"><span class="k">3Y Return</span><span class="v green">16.85%</span></div>
+      <div class="kv"><span class="k">5Y Return</span><span class="v green">13.70%</span></div>
+      <div class="kv"><span class="k">10Y Track Record</span><span class="v green">Consistently beat benchmark</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">MANAGER PROFILE</div>
+      <div class="kv"><span class="k">CIO</span><span class="v">Neelesh Surana</span></div>
+      <div class="kv"><span class="k">CIO Tenure at Mirae</span><span class="v green">Since 2008 (~18 years)</span></div>
+      <div class="kv"><span class="k">CIO Total Experience</span><span class="v green">32+ years</span></div>
+      <div class="kv"><span class="k">Co-Manager</span><span class="v">Ankit Jain</span></div>
+      <div class="kv"><span class="k">Philosophy</span><span class="v">Bottom-up · Quality-Growth · Buy &amp; Hold</span></div>
+      <div class="kv"><span class="k">Manager Score</span><span class="v green">8 / 10</span></div>
+      <div class="kv"><span class="k">Consistency Score</span><span class="v green">7 / 10</span></div>
+      <div class="kv"><span class="k">Key Person Risk</span><span class="v green">Low (team-based, deep bench)</span></div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="tag red">Financial Services 32% concentration — elevated sector risk</div>
+    <div class="tag yellow">1Y return 6.12% — recent underperformance vs category</div>
+    <div class="tag green">10Y consistent benchmark outperformance</div>
+    <div class="tag green">Surana: 18Y at Mirae, full market cycle track record</div>
+    <div class="tag green">Mandate: 35% min each in large + mid — structural stability</div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE FUND MANAGER</div>
+    <p>Neelesh Surana has been running money at Mirae since 2008 — through the 2008 crash, 2013 taper tantrum, COVID, and everything in between. <strong>18 years at the same desk is extremely rare</strong> and tells you this person isn't just chasing hot themes. He's seen every kind of market and kept his head.</p>
+    <p>The <span class="warn">recent 1-year return of 6.12%</span> looks soft. But this is a deliberate consequence of the fund's structure — it must keep at least 35% in large caps (the big steady companies), which drags on returns when mid caps are flying but protects you when markets crash. It's the fund equivalent of wearing a seatbelt — <strong>feels slow when nothing bad happens, but you're very glad it's there when it does.</strong></p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT C -->
+  <div class="section-label">AGENT C &mdash; HOLDINGS LOOK-THROUGH</div>
+  <div class="card">
+    <div class="card-title">TOP HOLDINGS (Apr–Jun 2026)</div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>HOLDING</th><th>WT%</th><th>SECTOR</th><th>PE (est)</th><th>ROCE (est)</th><th>Sc A</th><th>Sc B</th><th>Sc C</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>HDFC Bank</td><td class="wt">6.53%</td><td><span class="sector-tag tag-banks">PrivateBanks</span></td><td>~20x</td><td>~18%</td><td class="ret-sc A">[15,21]</td><td class="ret-sc B">[-3,4]</td><td class="ret-sc C">[-9,-2]</td></tr>
+        <tr><td>2</td><td>ICICI Bank</td><td class="wt">3.67%</td><td><span class="sector-tag tag-banks">PrivateBanks</span></td><td>~17x</td><td>~19%</td><td class="ret-sc A">[17,23]</td><td class="ret-sc B">[-2,5]</td><td class="ret-sc C">[-8,-1]</td></tr>
+        <tr><td>3</td><td>Axis Bank</td><td class="wt">3.04%</td><td><span class="sector-tag tag-banks">PrivateBanks</span></td><td>~13x</td><td>~16%</td><td class="ret-sc A">[14,20]</td><td class="ret-sc B">[-4,3]</td><td class="ret-sc C">[-10,-3]</td></tr>
+        <tr><td>4</td><td>Reliance Industries</td><td class="wt">2.47%</td><td><span class="sector-tag tag-energy">Energy/Conglomerate</span></td><td>~25x</td><td>~12%</td><td class="ret-sc A">[13,19]</td><td class="ret-sc B">[2,8]</td><td class="ret-sc C">[-5,1]</td></tr>
+        <tr><td colspan="9" style="color:var(--muted);font-size:11px;padding-top:10px">Remaining portfolio: Consumer Cyclical 13.84% · Industrials 11.57% · Healthcare 10.90% · Basic Materials 8.53% · Technology 6.23% · Energy 4.20% · Utilities 3.96% · Comm Services 3.65% · Consumer Defensive 2.98% · Real Estate 2.11%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">SECTOR ALLOCATION</div>
+    <div class="grid2">
+      <div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Financial Services</span><span class="spct">32.03%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:32%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Consumer Cyclical</span><span class="spct">13.84%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:13.8%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Industrials</span><span class="spct">11.57%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:11.6%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Healthcare</span><span class="spct">10.90%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:10.9%"></div></div></div>
+      </div>
+      <div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Basic Materials</span><span class="spct">8.53%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:8.5%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Technology</span><span class="spct">6.23%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:6.2%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Energy</span><span class="spct">4.20%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:4.2%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Other sectors</span><span class="spct">~12.7%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:12.7%"></div></div></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="tag yellow">Financial Services 32% — largest single sector, rate-sensitive</div>
+      <div class="tag blue">Mandate Integrity 8/10 — Clean, no drift</div>
+      <div class="tag green">Well-diversified across 8+ sectors beyond top 4</div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT'S INSIDE THE FUND</div>
+    <p>The biggest positions are India's top private banks — HDFC Bank, ICICI Bank, Axis Bank. That's <strong>13%+ of the fund in banking alone</strong>. Add the rest of financial services (insurance, NBFCs, etc.) and you're at 32% in finance. That's not necessarily bad — India's banking sector is genuinely good — but it means this fund's fate is heavily tied to one industry.</p>
+    <p>The <span class="warn">risk in Scenarios B and C</span> (where RBI has to raise rates) is real: banks get squeezed when borrowing costs rise. That's why the fund's downside is worse than you might expect from a "large and mid cap" label. The <span class="highlight">bright side</span>: financial services is well-positioned in Scenario A — growth means more loans, more transactions, more profits.</p>
+    <p>Beyond banking, the fund is well-spread: healthcare, industrials, consumer goods, materials. That's genuinely diversified. The large cap floor (35% minimum) keeps this from being a volatile pure mid cap bet — <strong>think of it as a mid cap fund with training wheels.</strong></p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT D -->
+  <div class="section-label">AGENT D &mdash; FUND SYNTHESIS</div>
+
+  <div style="margin-bottom:20px;display:flex;justify-content:center;">
+    <div class="pwe-box" style="min-width:280px;">
+      <div class="pwe-fund">PROBABILITY-WEIGHTED EXPECTED RETURN</div>
+      <div class="pwe-val">7.30%</div>
+      <div class="pwe-label">0.50×13.5 + 0.30×2.5 + 0.20×(−3.5) + manager adj +0.5%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SYNTHESIS SCORECARD</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">PWE (pre-adj)</span><span class="v yellow">6.80%</span></div>
+        <div class="kv"><span class="k">Manager Adjustment</span><span class="v green">+0.50% (score 8/10)</span></div>
+        <div class="kv"><span class="k">PWE (final)</span><span class="v yellow">7.30% p.a.</span></div>
+        <div class="kv"><span class="k">Downside (Sc C exp)</span><span class="v red">−3.5%</span></div>
+        <div class="kv"><span class="k">Upside (Sc A exp)</span><span class="v green">13.5%</span></div>
+        <div class="kv"><span class="k">Return Dispersion</span><span class="v green">17.0 ppt (Normal)</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Style-Regime Alignment</span><span class="v yellow">Partial</span></div>
+        <div class="kv"><span class="k">Category Prior Fit</span><span class="v yellow">Neutral (hybrid L+M cap)</span></div>
+        <div class="kv"><span class="k">Mandate Integrity</span><span class="v green">Clean 8/10</span></div>
+        <div class="kv"><span class="k">11Y FIRE Multiplier</span><span class="v yellow">(1.0730)^11 = 2.17×</span></div>
+        <div class="kv"><span class="k">₹10L becomes</span><span class="v yellow">₹21.7L at FIRE</span></div>
+        <div class="kv"><span class="k">Verdict</span><span class="v yellow">HOLD</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-banner">
+    <div class="verdict">HOLD</div>
+    <div class="verdict-sub">Suitable for conservative-moderate risk tolerance. Suboptimal for Ashutosh's moderate-aggressive FIRE profile.</div>
+    <div class="reason">
+      Mirae Large &amp; Midcap is a well-managed, disciplined fund with an exceptional CIO. However, the mandatory large cap floor (35%) caps upside in a Growth Expansion regime where mid caps outperform. The 32% financial services concentration creates asymmetric downside in inflation/risk-off scenarios. PWE of 7.30% is respectable but meaningfully below what a pure mid cap allocation generates. <strong>If already invested, stay — the fund will not destroy wealth. For fresh money, a pure mid cap allocation is more aligned to an 11-year FIRE horizon with moderate-aggressive risk appetite.</strong>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE BOTTOM LINE</div>
+    <p>The PWE of 7.30% means: across all realistic futures, this fund is expected to grow your money at about <strong>7.3% per year on average</strong>. Over 11 years, ₹10 lakh becomes roughly ₹21.7 lakh. That's solid — it's better than a fixed deposit, it beats inflation, it's not risky in an extreme way.</p>
+    <p>But here's the honest assessment for your FIRE goal: <span class="warn">this fund is built for someone slightly more cautious than you</span>. The large cap floor is a feature for conservative investors — it's a slight limiter for someone with your 11-year horizon and moderate-aggressive appetite. You can handle more mid cap exposure and would likely come out ahead over 11 years with it.</p>
+    <p><span class="highlight">If you already own this fund: HOLD. Don't exit.</span> Surana is excellent, the fund is clean, and the LTCG friction of switching isn't worth it. <span class="warn">If you're deciding whether to add fresh SIP money here vs. a pure mid cap: the pure mid cap wins</span> — as long as you can handle the bumpier ride.</p>
+  </div>
+
+  <div class="provenance-note">
+    <strong>DATA PROVENANCE</strong><br>
+    Run date: 25 Jun 2026 · Model: claude-sonnet-4-6 · Macro regime confidence: 73/100 · AUM, returns, manager data: ValueResearch, Groww, Mirae Asset official site, Morningstar India (Apr–Jun 2026) · Scenario return ranges: model estimates based on sector allocation and regime sensitivity · Holdings: top 4 confirmed, sector breakdown Apr 2026<br><br>
+    <strong>Profile:</strong> Ashutosh · 29 · FIRE age 40 · 11Y runway · Moderate-Aggressive · LTCG 10% / STCG 15% · SIPs never stop
+  </div>
+
+</div>
+</body>
+</html>
