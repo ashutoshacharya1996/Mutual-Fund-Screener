@@ -185,14 +185,14 @@ td.num{text-align:right}
   </div>
 </div>
 
-<!-- API KEY ROW -->
-<div class="input-row" id="apiKeyRow">
+<!-- PROXY URL ROW -->
+<div class="input-row" id="proxyRow">
   <div class="input-group" style="flex:2">
-    <label>ANTHROPIC API KEY <span style="color:var(--amber)">(required — stored in memory only, never sent anywhere except api.anthropic.com)</span></label>
-    <input type="text" id="apiKey" placeholder="sk-ant-..." autocomplete="off" />
+    <label>WORKER PROXY URL <span style="color:var(--text3)">(your Cloudflare Worker — see README for setup)</span></label>
+    <input type="text" id="proxyUrl" placeholder="https://your-worker.your-subdomain.workers.dev" autocomplete="off" />
   </div>
-  <button class="analyse-btn" style="background:var(--text3)" onclick="saveKey()">SAVE KEY</button>
-  <span id="keyStatus" style="font-family:var(--mono);font-size:11px;color:var(--text3);align-self:center">no key set</span>
+  <button class="analyse-btn" style="background:var(--text3)" onclick="saveProxy()">SAVE</button>
+  <span id="proxyStatus" style="font-family:var(--mono);font-size:11px;color:var(--text3);align-self:center">no proxy set</span>
 </div>
 
 <!-- INPUT ROW -->
@@ -644,23 +644,27 @@ Output ONLY valid JSON:
   "next_action": ""
 }`;
 
-// ─── API KEY ──────────────────────────────────────────────────────────────────
-let ANTHROPIC_KEY = '';
-function saveKey() {
-  const k = $('apiKey').value.trim();
-  if (!k.startsWith('sk-ant-')) { alert('Key must start with sk-ant-'); return; }
-  ANTHROPIC_KEY = k;
-  $('apiKey').value = '••••••••••••••••' + k.slice(-4);
-  $('keyStatus').textContent = '✓ key saved';
-  $('keyStatus').style.color = 'var(--green)';
-  $('apiKey').disabled = true;
+// ─── PROXY CONFIG ─────────────────────────────────────────────────────────────
+let PROXY_URL = localStorage.getItem('mf_proxy_url') || '';
+if (PROXY_URL) {
+  $('proxyUrl').value = PROXY_URL;
+  $('proxyStatus').textContent = '✓ proxy set';
+  $('proxyStatus').style.color = 'var(--green)';
+}
+function saveProxy() {
+  const u = $('proxyUrl').value.trim();
+  if (!u.startsWith('https://')) { alert('URL must start with https://'); return; }
+  PROXY_URL = u.replace(/\/$/, '');
+  localStorage.setItem('mf_proxy_url', PROXY_URL);
+  $('proxyStatus').textContent = '✓ proxy saved';
+  $('proxyStatus').style.color = 'var(--green)';
 }
 
 // ─── API CALL WITH STREAMING ──────────────────────────────────────────────────
 async function callAgent(systemPrompt, userMessage, streamElId, onComplete) {
-  if (!ANTHROPIC_KEY) {
-    alert('Please enter your Anthropic API key first.');
-    onComplete(null, '', new Error('No API key'));
+  if (!PROXY_URL) {
+    alert('Please enter your Cloudflare Worker proxy URL first and click SAVE.');
+    onComplete(null, '', new Error('No proxy URL'));
     return;
   }
   const streamEl = $(streamElId);
@@ -670,14 +674,9 @@ async function callAgent(systemPrompt, userMessage, streamElId, onComplete) {
 
   async function attempt(messages) {
     attempts++;
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch(PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 8000,
