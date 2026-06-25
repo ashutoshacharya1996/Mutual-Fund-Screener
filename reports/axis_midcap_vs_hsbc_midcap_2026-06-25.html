@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axis Mid Cap vs HSBC Mid Cap — Fund Analysis Report | 25 Jun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --purple: #c084fc;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #0d1b2e 0%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+  }
+  .header-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: var(--muted); }
+  .header .verdict-chip {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 16px;
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .header { padding: 20px 16px; }
+    .container { padding: 20px 12px; }
+  }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); font-size: 12px; }
+  .kv .v { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+  .kv .v.green { color: var(--green); }
+  .kv .v.red { color: var(--red); }
+  .kv .v.yellow { color: var(--yellow); }
+  .kv .v.accent { color: var(--accent); }
+  .kv .v.purple { color: var(--purple); }
+
+  /* Regime scores */
+  .regime-bar-wrap { margin-bottom: 10px; }
+  .regime-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .regime-bar-label .rname { color: var(--text); }
+  .regime-bar-label .rscore { font-family: var(--mono); color: var(--accent); font-weight: 700; }
+  .regime-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .regime-bar-fill { height: 100%; border-radius: 3px; }
+
+  /* Scenarios */
+  .scenario { background: var(--surface2); border-radius: 6px; padding: 14px; margin-bottom: 10px; border-left: 3px solid; }
+  .scenario.A { border-color: var(--green); }
+  .scenario.B { border-color: var(--yellow); }
+  .scenario.C { border-color: var(--red); }
+  .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .scenario-name { font-weight: 600; font-size: 13px; }
+  .scenario-prob { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+  .scenario.A .scenario-prob { color: var(--green); }
+  .scenario.B .scenario-prob { color: var(--yellow); }
+  .scenario.C .scenario-prob { color: var(--red); }
+  .scenario-macro { font-size: 11px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+  .scenario-returns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ret-box { background: rgba(10,14,26,0.5); border-radius: 4px; padding: 8px; }
+  .ret-box .fund-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-family: var(--mono); letter-spacing: 0.05em; }
+  .ret-box .ret-range { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+
+  /* Holdings table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 6px 8px; border-bottom: 1px solid rgba(30,45,69,0.4); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .wt { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  .sector-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-family: var(--mono); }
+  .tag-banks { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .tag-capex { background: rgba(129,140,248,0.15); color: var(--accent2); }
+  .tag-capital { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .tag-pharma { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-it { background: rgba(192,132,252,0.15); color: var(--purple); }
+  .tag-auto { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .tag-consumer { background: rgba(248,113,113,0.15); color: var(--red); }
+  .tag-fmcg { background: rgba(52,211,153,0.15); color: var(--green); }
+  .ret-sc { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+  .ret-sc.A { color: var(--green); }
+  .ret-sc.B { color: var(--yellow); }
+  .ret-sc.C { color: var(--red); }
+
+  /* Decision banner */
+  .decision-banner {
+    background: linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(56,189,248,0.05) 100%);
+    border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .decision-banner .verdict { font-size: 32px; font-weight: 800; color: var(--green); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .decision-banner .verdict-sub { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+  .decision-banner .reason { font-size: 13px; color: var(--text); line-height: 1.7; max-width: 700px; margin: 0 auto; }
+
+  /* PWE comparison */
+  .pwe-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; }
+  .pwe-box { background: var(--surface2); border-radius: 8px; padding: 20px; text-align: center; }
+  .pwe-box.winner { border: 1px solid rgba(52,211,153,0.4); }
+  .pwe-fund { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .pwe-val { font-size: 28px; font-weight: 800; font-family: var(--mono); }
+  .pwe-box.winner .pwe-val { color: var(--green); }
+  .pwe-box:not(.winner) .pwe-val { color: var(--muted); }
+  .pwe-label { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .pwe-vs { font-family: var(--mono); font-size: 20px; color: var(--border); font-weight: 700; text-align: center; }
+
+  /* FIRE table */
+  .fire-table td:first-child { color: var(--muted); font-size: 12px; }
+  .fire-table .fire-val { font-family: var(--mono); font-weight: 700; font-size: 13px; }
+  .fire-table .fire-val.axis { color: var(--green); }
+  .fire-table .fire-val.hsbc { color: var(--muted); }
+
+  /* Behavioral flags */
+  .flag { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .flag:last-child { border-bottom: none; }
+  .flag-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+  .flag-icon.warn { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .flag-icon.info { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .flag-title { font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+  .flag-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Confidence gauge */
+  .confidence-wrap { display: flex; align-items: center; gap: 20px; }
+  .gauge { position: relative; width: 80px; height: 80px; }
+  .gauge svg { transform: rotate(-90deg); }
+  .gauge-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--mono); }
+  .gauge-score { font-size: 20px; font-weight: 800; color: var(--accent); }
+  .gauge-label { font-size: 9px; color: var(--muted); }
+  .confidence-details { flex: 1; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-family: var(--mono); margin: 2px; }
+  .tag.green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .tag.red { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag.blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .tag.purple { background: rgba(192,132,252,0.12); color: var(--purple); border: 1px solid rgba(192,132,252,0.3); }
+
+  /* Provenance note */
+  .provenance-note {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 24px;
+    font-family: var(--mono);
+  }
+  .provenance-note strong { color: var(--text); }
+
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  .overlap-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(129,140,248,0.1);
+    border: 1px solid rgba(129,140,248,0.3);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent2);
+  }
+
+  .summary-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">MUTUAL FUND SCREENER &nbsp;·&nbsp; ASHUTOSH, 29, BHUBANESWAR &nbsp;·&nbsp; FIRE AGE 40 &nbsp;·&nbsp; RUN DATE: 25 JUN 2026 &nbsp;·&nbsp; CLAUDE-SONNET-4-6</div>
+  <h1>Axis Mid Cap Fund vs HSBC Mid Cap Fund</h1>
+  <div class="subtitle">Full five-agent analysis &nbsp;·&nbsp; Regime-adjusted &nbsp;·&nbsp; 11-year FIRE horizon &nbsp;·&nbsp; Three-scenario probability-weighted expected return</div>
+  <div class="verdict-chip">STAY WITH AXIS MID CAP</div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════ AGENT A: MACRO ═══════════════════ -->
+  <div class="section-label">AGENT A &mdash; MACRO PRIOR ENGINE</div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">INDIA MACRO SNAPSHOT</div>
+      <div class="kv"><span class="k">RBI Repo Rate</span><span class="v accent">5.25%</span></div>
+      <div class="kv"><span class="k">RBI Stance</span><span class="v yellow">Neutral (Holding)</span></div>
+      <div class="kv"><span class="k">Cumulative cuts FY25-26</span><span class="v green">−100 bps</span></div>
+      <div class="kv"><span class="k">CPI May 2026</span><span class="v yellow">3.93% (5-mo rising trend)</span></div>
+      <div class="kv"><span class="k">GDP Q4 FY26</span><span class="v green">7.8% YoY</span></div>
+      <div class="kv"><span class="k">GDP Full Year FY26</span><span class="v green">7.7% (accelerating)</span></div>
+      <div class="kv"><span class="k">IIP Apr 2026 (Mfg)</span><span class="v green">+6.2% YoY</span></div>
+      <div class="kv"><span class="k">GST May 2026</span><span class="v green">₹1.94L cr (+3.2% headline)</span></div>
+      <div class="kv"><span class="k">India VIX</span><span class="v green">12.95 (low vol)</span></div>
+      <div class="kv"><span class="k">Nifty PE</span><span class="v green">20.02x (−14.6% vs 10Y avg)</span></div>
+      <div class="kv"><span class="k">Midcap PE</span><span class="v yellow">~30x (elevated)</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">FLOWS & GLOBAL</div>
+      <div class="kv"><span class="k">FII 30d (May + Jun partial)</span><span class="v red">−₹99,007 cr (net seller)</span></div>
+      <div class="kv"><span class="k">DII May 2026</span><span class="v green">+₹82,600 cr</span></div>
+      <div class="kv"><span class="k">SIP May 2026</span><span class="v green">₹30,953 cr (+16% YoY)</span></div>
+      <div class="kv"><span class="k">USD/INR</span><span class="v red">94.47 (−10.3% YoY, weakened)</span></div>
+      <div class="kv"><span class="k">Brent Crude</span><span class="v green">$73.05/bbl (Iran peace talks)</span></div>
+      <div class="kv"><span class="k">US Fed Rate</span><span class="v yellow">3.50–3.75%</span></div>
+      <div class="kv"><span class="k">US Fed Stance</span><span class="v red">Hawkish (Warsh, hike possible)</span></div>
+      <div class="kv"><span class="k">US 10Y Yield</span><span class="v yellow">4.50%</span></div>
+      <div class="kv"><span class="k">DXY</span><span class="v yellow">101.61 (strengthening)</span></div>
+      <div class="kv"><span class="k">System Liquidity</span><span class="v red">Unavailable (2 fetch attempts)</span></div>
+      <div class="kv"><span class="k">Nifty PB</span><span class="v green">3.07x</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">REGIME SCORING — CONTINUOUS 0–100</div>
+    <div class="grid2">
+      <div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Growth Expansion <span class="tag green" style="font-size:9px">PRIMARY</span></span><span class="rscore">72</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:72%;background:linear-gradient(90deg,#34d399,#059669)"></div></div>
+        </div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Domestic Capex Boom <span class="tag blue" style="font-size:9px">SECONDARY</span></span><span class="rscore">68</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:68%;background:linear-gradient(90deg,#38bdf8,#0284c7)"></div></div>
+        </div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Goldilocks</span><span class="rscore">64</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:64%;background:linear-gradient(90deg,#818cf8,#6366f1)"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Stagflation Risk</span><span class="rscore">38</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:38%;background:linear-gradient(90deg,#fbbf24,#d97706)"></div></div>
+        </div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Liquidity Squeeze</span><span class="rscore">28</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:28%;background:linear-gradient(90deg,#fb923c,#ea580c)"></div></div>
+        </div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Risk-Off / Shock</span><span class="rscore">18</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:18%;background:linear-gradient(90deg,#f87171,#dc2626)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:24px;flex-wrap:wrap;font-size:12px;">
+      <div><span style="color:var(--muted)">Regime Transition:</span> <span style="color:var(--text)">Stable momentum</span></div>
+      <div><span style="color:var(--muted)">Stagflation Tail Risk:</span> <span style="color:var(--yellow)">20% (if CPI keeps rising)</span></div>
+      <div><span style="color:var(--muted)">Regime Confidence:</span> <span style="color:var(--accent);font-family:var(--mono);font-weight:700">73/100 &nbsp;Medium-High</span></div>
+      <div><span style="color:var(--muted)">Band Width:</span> <span style="color:var(--text)">Normal</span></div>
+    </div>
+  </div>
+
+  <!-- Scenarios -->
+  <div class="card">
+    <div class="card-title">FORWARD SCENARIOS — PROBABILITIES SUM TO 100%</div>
+
+    <div class="scenario A">
+      <div class="scenario-header">
+        <span class="scenario-name">Scenario A &nbsp; Steady Compounding</span>
+        <span class="scenario-prob">50%</span>
+      </div>
+      <div class="scenario-macro">GDP 7.5% · CPI 4.2% · RBI holds at 5.25% · G-Sec 6.9% · USD/INR 92 · Brent $70/bbl</div>
+      <div class="scenario-returns">
+        <div class="ret-box">
+          <div class="fund-label">AXIS MID CAP</div>
+          <div class="ret-range" style="color:var(--green)">12% – 22%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">expected 16.9%</div>
+        </div>
+        <div class="ret-box">
+          <div class="fund-label">HSBC MID CAP</div>
+          <div class="ret-range" style="color:var(--green)">12% – 26%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">expected 18.2%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario B">
+      <div class="scenario-header">
+        <span class="scenario-name">Scenario B &nbsp; Inflation Creep</span>
+        <span class="scenario-prob">30%</span>
+      </div>
+      <div class="scenario-macro">GDP 6.8% · CPI 5.3% · RBI hikes +25bp · G-Sec 7.5% · USD/INR 97 · Brent $82/bbl</div>
+      <div class="scenario-returns">
+        <div class="ret-box">
+          <div class="fund-label">AXIS MID CAP</div>
+          <div class="ret-range" style="color:var(--yellow)">0% – 9%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">expected 4.4%</div>
+        </div>
+        <div class="ret-box">
+          <div class="fund-label">HSBC MID CAP</div>
+          <div class="ret-range" style="color:var(--yellow)">−4% – 7%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">expected 1.3%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario C">
+      <div class="scenario-header">
+        <span class="scenario-name">Scenario C &nbsp; Global Risk-Off</span>
+        <span class="scenario-prob">20%</span>
+      </div>
+      <div class="scenario-macro">GDP 6.2% · CPI 5.8% · RBI hikes · G-Sec 8.0% · USD/INR 100 · Brent $90/bbl</div>
+      <div class="scenario-returns">
+        <div class="ret-box">
+          <div class="fund-label">AXIS MID CAP</div>
+          <div class="ret-range" style="color:var(--red)">−6% – 3%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">expected −1.9%</div>
+        </div>
+        <div class="ret-box">
+          <div class="fund-label">HSBC MID CAP</div>
+          <div class="ret-range" style="color:var(--red)">−10% – 0%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)">expected −4.8%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════ AGENT B: FUND MANAGERS ═══════════════════ -->
+  <div class="section-label">AGENT B &mdash; FUND MANAGER ASSESSMENT</div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">AXIS MID CAP — MANAGER PROFILE</div>
+      <div class="kv"><span class="k">AUM (latest)</span><span class="v accent">₹32,852 cr</span></div>
+      <div class="kv"><span class="k">Expense Ratio (direct)</span><span class="v green">0.57%</span></div>
+      <div class="kv"><span class="k">Lead Manager</span><span class="v">Shreyash Devalkar</span></div>
+      <div class="kv"><span class="k">Tenure (Devalkar)</span><span class="v green">Nov 2016 → present (~9.5Y)</span></div>
+      <div class="kv"><span class="k">Co-Managers</span><span class="v">Nitin Arora · Krishnaa N</span></div>
+      <div class="kv"><span class="k">Philosophy</span><span class="v">Quality-Growth</span></div>
+      <div class="kv"><span class="k">Manager Score</span><span class="v green">7 / 10</span></div>
+      <div class="kv"><span class="k">Consistency</span><span class="v yellow">6 / 10 (top or bottom quartile)</span></div>
+      <div class="kv"><span class="k">Key Person Risk</span><span class="v yellow">Medium</span></div>
+      <div class="kv"><span class="k">Mandate Drift</span><span class="v green">None detected</span></div>
+      <div style="margin-top:12px;">
+        <div class="tag red">Missed metals/mining rally 2021-23 (quality filter)</div>
+        <div class="tag green">Strong downside protection in pure sell-offs</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">HSBC MID CAP — MANAGER PROFILE</div>
+      <div class="kv"><span class="k">AUM (Apr 2026)</span><span class="v accent">₹11,342 cr</span></div>
+      <div class="kv"><span class="k">Expense Ratio (direct)</span><span class="v yellow">0.66%</span></div>
+      <div class="kv"><span class="k">Lead Manager</span><span class="v">Cheenu Gupta</span></div>
+      <div class="kv"><span class="k">Tenure (Gupta)</span><span class="v yellow">Nov 2022 → present (~3.5Y)</span></div>
+      <div class="kv"><span class="k">Co-Manager</span><span class="v">Mayank Chaturvedi</span></div>
+      <div class="kv"><span class="k">Philosophy</span><span class="v">Bottom-up Growth · Mfg/New-Age</span></div>
+      <div class="kv"><span class="k">Manager Score</span><span class="v green">7 / 10</span></div>
+      <div class="kv"><span class="k">5Y Return (fund)</span><span class="v green">18.66% CAGR</span></div>
+      <div class="kv"><span class="k">Key Person Risk</span><span class="v yellow">Medium-High</span></div>
+      <div class="kv"><span class="k">Mandate Drift Risk</span><span class="v yellow">Elevated</span></div>
+      <div style="margin-top:12px;">
+        <div class="tag red">No full-cycle track record — only Nov 2022 bull market</div>
+        <div class="tag red">87 stocks → potential closet indexing in tail</div>
+        <div class="tag yellow">Heavy sector concentration: electrical equipment 13.38%, capital markets 12.5%</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════ AGENT C: HOLDINGS ═══════════════════ -->
+  <div class="section-label">AGENT C &mdash; HOLDINGS LOOK-THROUGH</div>
+
+  <div class="card">
+    <div class="card-title">AXIS MID CAP — TOP HOLDINGS (as of 14 Jun 2026)</div>
+    <div style="margin-bottom:12px;font-size:12px;color:var(--muted)">Note: CCIL 6.57% + Nifty Futures 5.46% + Receivables 4.44% = 16.47% non-equity / hedges. Equity AUM effectively higher concentration.</div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>HOLDING</th><th>WT%</th><th>SECTOR</th><th>PE</th><th>ROCE</th><th>MOMENTUM</th><th>Sc A</th><th>Sc B</th><th>Sc C</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Federal Bank</td><td class="wt">3.83%</td><td><span class="sector-tag tag-banks">PrivateBanks</span></td><td>~10x</td><td>~17%</td><td><span class="tag green">Accelerating</span></td><td class="ret-sc A">[21,26]</td><td class="ret-sc B">[5,11]</td><td class="ret-sc C">[-4,1]</td></tr>
+        <tr><td>2</td><td>Fortis Healthcare</td><td class="wt">3.54%</td><td><span class="sector-tag tag-pharma">Pharma/Health</span></td><td>~45x</td><td>~15%</td><td><span class="tag blue">Stable</span></td><td class="ret-sc A">[16,21]</td><td class="ret-sc B">[6,11]</td><td class="ret-sc C">[-4,2]</td></tr>
+        <tr><td>3</td><td>MCX</td><td class="wt">3.04%</td><td><span class="sector-tag tag-capital">CapitalMkts</span></td><td>~35x</td><td>~30%</td><td><span class="tag green">Accelerating</span></td><td class="ret-sc A">[22,27]</td><td class="ret-sc B">[1,6]</td><td class="ret-sc C">[-3,2]</td></tr>
+        <tr><td>4</td><td>GE Vernova T&amp;D India</td><td class="wt">2.90%</td><td><span class="sector-tag tag-capex">CapexInfra</span></td><td>~85x</td><td>~25%</td><td><span class="tag green">Accelerating</span></td><td class="ret-sc A">[19,24]</td><td class="ret-sc B">[-2,3]</td><td class="ret-sc C">[-6,-1]</td></tr>
+        <tr><td>5</td><td>BSE Ltd</td><td class="wt">2.39%</td><td><span class="sector-tag tag-capital">CapitalMkts</span></td><td>~40x</td><td>~35%</td><td><span class="tag green">Accelerating</span></td><td class="ret-sc A">[19,24]</td><td class="ret-sc B">[-2,3]</td><td class="ret-sc C">[-6,-1]</td></tr>
+        <tr><td>6</td><td>Schaeffler India</td><td class="wt">2.22%</td><td><span class="sector-tag tag-auto">Auto/Bearings</span></td><td>~42x</td><td>~22%</td><td><span class="tag blue">Stable</span></td><td class="ret-sc A">[16,21]</td><td class="ret-sc B">[-5,0]</td><td class="ret-sc C">[-9,-4]</td></tr>
+        <tr><td>7</td><td>Cummins India</td><td class="wt">2.11%</td><td><span class="sector-tag tag-capex">CapexInfra</span></td><td>~35x</td><td>~28%</td><td><span class="tag blue">Stable</span></td><td class="ret-sc A">[19,24]</td><td class="ret-sc B">[-2,3]</td><td class="ret-sc C">[-6,-1]</td></tr>
+        <tr><td>8</td><td>Persistent Systems</td><td class="wt">2.00%</td><td><span class="sector-tag tag-it">IT/Tech</span></td><td>~38x</td><td>~24%</td><td><span class="tag green">Accelerating</span></td><td class="ret-sc A">[21,26]</td><td class="ret-sc B">[11,16]</td><td class="ret-sc C">[1,7]</td></tr>
+        <tr><td>9</td><td>Voltas</td><td class="wt">1.80%</td><td><span class="sector-tag tag-consumer">ConsumerDur</span></td><td>~55x</td><td>~12%</td><td><span class="tag blue">Stable</span></td><td class="ret-sc A">[16,21]</td><td class="ret-sc B">[-5,0]</td><td class="ret-sc C">[-9,-4]</td></tr>
+        <tr><td>10</td><td>Crompton Consumer</td><td class="wt">1.70%</td><td><span class="sector-tag tag-fmcg">FMCG/Consumer</span></td><td>~30x</td><td>~18%</td><td><span class="tag blue">Stable</span></td><td class="ret-sc A">[13,19]</td><td class="ret-sc B">[9,14]</td><td class="ret-sc C">[5,10]</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;font-size:12px;">
+      <div class="tag green">Mandate Integrity 8/10 — Clean</div>
+      <div class="tag blue">Style: Quality / Growth</div>
+      <div class="tag yellow">~16% derivatives + cash hedge</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">HSBC MID CAP — TOP HOLDINGS (as of Apr 2026)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>HOLDING</th><th>WT%</th><th>SECTOR</th><th>PE</th><th>ROCE</th><th>Sc A</th><th>Sc B</th><th>Sc C</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Nykaa (FSN E-Commerce)</td><td class="wt">5.08%</td><td><span class="sector-tag tag-consumer">Consumer/Retail</span></td><td>~80x</td><td>~10%</td><td class="ret-sc A">[14,19]</td><td class="ret-sc B">[-7,-2]</td><td class="ret-sc C">[-11,-6]</td></tr>
+        <tr><td>2</td><td>GE Vernova T&amp;D India</td><td class="wt">4.75%</td><td><span class="sector-tag tag-capex">CapexInfra</span></td><td>~85x</td><td>~25%</td><td class="ret-sc A">[19,24]</td><td class="ret-sc B">[-2,3]</td><td class="ret-sc C">[-6,-1]</td></tr>
+        <tr><td>3</td><td>Hitachi Energy India</td><td class="wt">4.03%</td><td><span class="sector-tag tag-capex">CapexInfra</span></td><td>~90x</td><td>~22%</td><td class="ret-sc A">[19,24]</td><td class="ret-sc B">[-2,3]</td><td class="ret-sc C">[-6,-1]</td></tr>
+        <tr><td>4</td><td>BSE Ltd</td><td class="wt">4.01%</td><td><span class="sector-tag tag-capital">CapitalMkts</span></td><td>~40x</td><td>~35%</td><td class="ret-sc A">[19,24]</td><td class="ret-sc B">[-2,3]</td><td class="ret-sc C">[-6,-1]</td></tr>
+        <tr><td>5</td><td>Federal Bank</td><td class="wt">3.75%</td><td><span class="sector-tag tag-banks">PrivateBanks</span></td><td>~10x</td><td>~17%</td><td class="ret-sc A">[21,26]</td><td class="ret-sc B">[5,11]</td><td class="ret-sc C">[-4,1]</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted)">87 total holdings disclosed. Top 5 shown — remaining tail exhibits closet-indexer concentration pattern.</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="tag yellow">Mandate Integrity 7/10 — Drift Risk</div>
+      <div class="tag red">Electrical equipment 13.38% sector wt</div>
+      <div class="tag red">Capital markets 12.5% sector wt</div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;display:flex;justify-content:center;">
+    <div class="overlap-badge">
+      Portfolio Overlap (GE Vernova + BSE + Federal Bank) &nbsp; ≈ &nbsp; <strong>27%</strong> by weight
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════ AGENT D: SYNTHESIS ═══════════════════ -->
+  <div class="section-label">AGENT D &mdash; FUND SYNTHESIS</div>
+
+  <div class="card">
+    <div class="card-title">PROBABILITY-WEIGHTED EXPECTED RETURN (PWE)</div>
+    <div class="pwe-compare">
+      <div class="pwe-box winner">
+        <div class="pwe-fund">AXIS MID CAP</div>
+        <div class="pwe-val">9.39%</div>
+        <div class="pwe-label">0.50×16.9 + 0.30×4.4 + 0.20×(−1.9)</div>
+      </div>
+      <div class="pwe-vs">VS</div>
+      <div class="pwe-box">
+        <div class="pwe-fund">HSBC MID CAP</div>
+        <div class="pwe-val">8.53%</div>
+        <div class="pwe-label">0.50×18.2 + 0.30×1.3 + 0.20×(−4.8)</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+      <div class="grid2">
+        <div>
+          <div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:8px">AXIS MID CAP SYNTHESIS</div>
+          <div class="kv"><span class="k">PWE (annual, no adj)</span><span class="v green">9.39%</span></div>
+          <div class="kv"><span class="k">Downside (Sc C expected)</span><span class="v red">−1.9%</span></div>
+          <div class="kv"><span class="k">Upside (Sc A expected)</span><span class="v green">16.9%</span></div>
+          <div class="kv"><span class="k">Return Dispersion</span><span class="v yellow">18.8 ppt</span></div>
+          <div class="kv"><span class="k">Style-Regime Alignment</span><span class="v green">Aligned (Quality in Growth Expansion)</span></div>
+          <div class="kv"><span class="k">Category Prior Fit</span><span class="v yellow">Neutral (midcap PE elevated)</span></div>
+          <div class="kv"><span class="k">Manager Adjustment</span><span class="v">0% (score 7/10)</span></div>
+          <div class="kv"><span class="k">Mandate Integrity</span><span class="v green">Clean 8/10</span></div>
+          <div style="margin-top:8px"><div class="tag green">VERDICT: HOLD</div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:8px">HSBC MID CAP SYNTHESIS</div>
+          <div class="kv"><span class="k">PWE (annual, no adj)</span><span class="v red">8.53%</span></div>
+          <div class="kv"><span class="k">Downside (Sc C expected)</span><span class="v red">−4.8%</span></div>
+          <div class="kv"><span class="k">Upside (Sc A expected)</span><span class="v green">18.2%</span></div>
+          <div class="kv"><span class="k">Return Dispersion</span><span class="v red">23.0 ppt (WIDE)</span></div>
+          <div class="kv"><span class="k">Style-Regime Alignment</span><span class="v yellow">Partial (capex Sc A; exposed Sc B/C)</span></div>
+          <div class="kv"><span class="k">Category Prior Fit</span><span class="v yellow">Neutral</span></div>
+          <div class="kv"><span class="k">Manager Adjustment</span><span class="v">0% (score 7/10)</span></div>
+          <div class="kv"><span class="k">Mandate Integrity</span><span class="v yellow">Drift Risk 7/10</span></div>
+          <div style="margin-top:8px"><div class="tag yellow">VERDICT: HOLD (caution on concentration)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════ AGENT E: STAY vs SWITCH ═══════════════════ -->
+  <div class="section-label">AGENT E &mdash; STAY VS SWITCH DECISION</div>
+
+  <div class="decision-banner">
+    <div class="verdict">STAY WITH AXIS MID CAP</div>
+    <div class="verdict-sub">Do not switch to HSBC Mid Cap</div>
+    <div class="reason">
+      Axis has a higher forward PWE (+0.86 ppt), better downside protection (dispersion 18.8 vs 23.0 ppt), and superior 11-year FIRE compounding. HSBC's 3.5-year outperformance is entirely a bull-market artifact under one manager with zero full-cycle track record. The switch impulse is textbook <strong>recency bias</strong> compounded by <strong>shiny object syndrome</strong> (capex theme + hot 5Y number). After LTCG friction, switching destroys ≈₹26,000 per ₹10 lakh invested over 11 years.
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">SWITCH FRICTION ANALYSIS</div>
+      <div class="kv"><span class="k">Exit Load</span><span class="v green">0% (assumed held &gt;1 year)</span></div>
+      <div class="kv"><span class="k">Assumed Unrealised Gain</span><span class="v">~15% of corpus</span></div>
+      <div class="kv"><span class="k">LTCG Tax (10% on gain)</span><span class="v red">~1.5% of corpus</span></div>
+      <div class="kv"><span class="k">Total Switch Friction</span><span class="v red">~1.5%</span></div>
+      <div class="kv"><span class="k">PWE Differential</span><span class="v red">−0.86 ppt (HSBC lower)</span></div>
+      <div class="kv"><span class="k">Overlap (common holdings)</span><span class="v yellow">~27%</span></div>
+      <div class="kv"><span class="k">Diversification gained</span><span class="v red">Low (27% overlap)</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">FIRE MATH — 11-YEAR HORIZON</div>
+      <table class="fire-table">
+        <tr><td>Axis PWE</td><td class="fire-val axis">9.39% p.a.</td></tr>
+        <tr><td>Axis 11Y multiplier</td><td class="fire-val axis">2.684×</td></tr>
+        <tr><td>HSBC PWE</td><td class="fire-val hsbc">8.53% p.a.</td></tr>
+        <tr><td>HSBC 11Y multiplier</td><td class="fire-val hsbc">2.461×</td></tr>
+        <tr><td>HSBC post-switch (−1.5% friction)</td><td class="fire-val hsbc">2.424×</td></tr>
+        <tr><td style="padding-top:8px;border-top:1px solid var(--border)">Wealth destroyed by switching</td><td class="fire-val" style="color:var(--red);padding-top:8px">0.260× corpus</td></tr>
+        <tr><td>₹10L example</td><td class="fire-val" style="color:var(--red)">≈ ₹2.6L lost at FIRE</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BEHAVIORAL FLAGS — ASHUTOSH PROFILE</div>
+    <div class="flag">
+      <div class="flag-icon warn">⚠</div>
+      <div>
+        <div class="flag-title" style="color:var(--yellow)">Recency Bias Detected</div>
+        <div class="flag-desc">HSBC's 5Y return of 18.66% vs Axis lagging in recent periods is driving the switch impulse. Cheenu Gupta's tenure started Nov 2022 — the entire track record is a pure bull-market run. No data on how he manages drawdowns, quality of exit decisions, or portfolio behaviour in a rate-hike cycle. The 5Y number is real but the sample is non-representative.</div>
+      </div>
+    </div>
+    <div class="flag">
+      <div class="flag-icon warn">⚠</div>
+      <div>
+        <div class="flag-title" style="color:var(--yellow)">Shiny Object Syndrome</div>
+        <div class="flag-desc">The capex / electrical equipment / capital markets theme running in HSBC's portfolio is currently hot (Scenario A tailwind). But this concentration — 13.38% electrical equipment + 12.5% capital markets — means HSBC is effectively a thematic fund wearing a mid cap label. Axis is more diversified across quality businesses and would outperform materially in Scenarios B or C.</div>
+      </div>
+    </div>
+    <div class="flag">
+      <div class="flag-icon warn">⚠</div>
+      <div>
+        <div class="flag-title" style="color:var(--yellow)">Action Bias</div>
+        <div class="flag-desc">The SIP mandate is clear: SIPs never stop. Switching creates LTCG friction (~1.5%), resets cost basis, and adds execution risk. Given both funds are HOLD-rated, inaction is the correct action. Doing nothing is a decision — and in this case, the right one.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════ CONFIDENCE SCORECARD ═══════════════════ -->
+  <div class="section-label">CONFIDENCE SCORECARD</div>
+  <div class="card">
+    <div class="card-title">REGIME CONFIDENCE — 5 COMPONENTS × 20 = 100</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">Data freshness &amp; completeness</span><span class="v green">16/20</span></div>
+        <div class="kv"><span class="k">Signal coherence (macro vs flows)</span><span class="v green">15/20</span></div>
+        <div class="kv"><span class="k">Regime stability (no transition)</span><span class="v green">16/20</span></div>
+        <div class="kv"><span class="k">Cross-asset confirmation</span><span class="v yellow">14/20</span></div>
+        <div class="kv"><span class="k">Model uncertainty / tail risk</span><span class="v yellow">12/20</span></div>
+        <div class="kv" style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px"><span class="k" style="font-weight:700;color:var(--text)">TOTAL CONFIDENCE</span><span class="v" style="color:var(--accent);font-size:16px;font-weight:800">73 / 100</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Grade</span><span class="v accent">Medium-High</span></div>
+        <div class="kv"><span class="k">Return Band Width</span><span class="v">Normal</span></div>
+        <div class="kv"><span class="k">Hard cap applied?</span><span class="v green">No (below 80 threshold)</span></div>
+        <div class="kv"><span class="k">System Liquidity data</span><span class="v red">Unavailable — 2 fetch failures</span></div>
+        <div class="kv"><span class="k">Missing Tier 1 metrics</span><span class="v green">&lt;50% (no halt triggered)</span></div>
+        <div class="kv"><span class="k">Fallback invoked?</span><span class="v yellow">Partial (liquidity field = UNK)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ PROVENANCE ═══════════════════ -->
+  <div class="provenance-note">
+    <strong>DATA PROVENANCE &amp; METHODOLOGY</strong><br>
+    Run date: 25 Jun 2026 · Model: claude-sonnet-4-6 · Regime confidence: 73/100 (Medium-High) · Band width: Normal<br><br>
+    Sources: RBI MPC communiqué Jun 2026 · MOSPI GDP advance estimate May 2026 · MOSPI CPI May 2026 · SEBI AMFI SIP data May 2026 ·
+    NSE index data (Nifty PE/PB) · Axis AMC fact sheet Jun 14 2026 · HSBC MF fact sheet Apr 2026 · FII/DII data (NSE/SEBI) ·
+    US Federal Reserve dot plot Jun 2026 · Bloomberg/Reuters (Brent, DXY, USD/INR) · Iran-US diplomatic reports (oil)<br><br>
+    <strong>Caveats:</strong> System liquidity data unavailable after 2 fetch attempts — assigned confidence 0.0, field marked UNK.
+    Regime score unaffected (&lt;50% Tier 1 missing). HSBC holdings data from Apr 2026 (1 month lag vs Axis Jun 2026).
+    Midcap PE ~30x is an estimate (Nifty Midcap 150 PE) — exact figure unavailable at time of analysis.
+    All scenario return ranges are model estimates; past performance is not indicative of future returns.<br><br>
+    <strong>Profile applied:</strong> Ashutosh · Age 29 · Bhubaneswar · FIRE age 40 · 11-year runway · Moderate-Aggressive ·
+    LTCG 10% / STCG 15% · SIPs never stop · Behavioral flags: recency bias, shiny object syndrome, action bias
+  </div>
+
+</div>
+
+</body>
+</html>
