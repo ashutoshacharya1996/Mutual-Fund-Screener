@@ -185,6 +185,16 @@ td.num{text-align:right}
   </div>
 </div>
 
+<!-- API KEY ROW -->
+<div class="input-row" id="apiKeyRow">
+  <div class="input-group" style="flex:2">
+    <label>ANTHROPIC API KEY <span style="color:var(--amber)">(required — stored in memory only, never sent anywhere except api.anthropic.com)</span></label>
+    <input type="text" id="apiKey" placeholder="sk-ant-..." autocomplete="off" />
+  </div>
+  <button class="analyse-btn" style="background:var(--text3)" onclick="saveKey()">SAVE KEY</button>
+  <span id="keyStatus" style="font-family:var(--mono);font-size:11px;color:var(--text3);align-self:center">no key set</span>
+</div>
+
 <!-- INPUT ROW -->
 <div class="input-row">
   <div class="input-group">
@@ -634,8 +644,25 @@ Output ONLY valid JSON:
   "next_action": ""
 }`;
 
+// ─── API KEY ──────────────────────────────────────────────────────────────────
+let ANTHROPIC_KEY = '';
+function saveKey() {
+  const k = $('apiKey').value.trim();
+  if (!k.startsWith('sk-ant-')) { alert('Key must start with sk-ant-'); return; }
+  ANTHROPIC_KEY = k;
+  $('apiKey').value = '••••••••••••••••' + k.slice(-4);
+  $('keyStatus').textContent = '✓ key saved';
+  $('keyStatus').style.color = 'var(--green)';
+  $('apiKey').disabled = true;
+}
+
 // ─── API CALL WITH STREAMING ──────────────────────────────────────────────────
 async function callAgent(systemPrompt, userMessage, streamElId, onComplete) {
+  if (!ANTHROPIC_KEY) {
+    alert('Please enter your Anthropic API key first.');
+    onComplete(null, '', new Error('No API key'));
+    return;
+  }
   const streamEl = $(streamElId);
   streamEl.textContent = '';
   let fullText = '';
@@ -645,7 +672,12 @@ async function callAgent(systemPrompt, userMessage, streamElId, onComplete) {
     attempts++;
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 8000,
