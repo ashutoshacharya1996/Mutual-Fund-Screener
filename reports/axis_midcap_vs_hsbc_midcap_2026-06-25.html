@@ -200,6 +200,38 @@
   .tag.blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
   .tag.purple { background: rgba(192,132,252,0.12); color: var(--purple); border: 1px solid rgba(192,132,252,0.3); }
 
+  /* ELI15 plain-language box */
+  .eli15 {
+    background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(129,140,248,0.04) 100%);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .eli15-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .eli15-label .emoji { font-size: 14px; }
+  .eli15 p {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.75;
+    margin-bottom: 6px;
+  }
+  .eli15 p:last-child { margin-bottom: 0; }
+  .eli15 strong { color: var(--text); }
+  .eli15 .highlight { color: var(--green); font-weight: 600; }
+  .eli15 .warn { color: var(--yellow); font-weight: 600; }
+  .eli15 .danger { color: var(--red); font-weight: 600; }
+
   /* Provenance note */
   .provenance-note {
     background: var(--surface2);
@@ -382,6 +414,13 @@
     </div>
   </div>
 
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT THIS MEANS FOR YOU</div>
+    <p>Think of the macro section as checking the <strong>weather before a road trip</strong>. Right now India's economy is in good shape — growth is fast (7.7%), inflation is under control (3.9%), and stock valuations are actually reasonable compared to history. That's the sunny-day scenario.</p>
+    <p>The <strong>three scenarios</strong> are just "what if" plans. <span class="highlight">Scenario A (50% likely)</span> is the base case — things keep chugging along, mid caps do well. <span class="warn">Scenario B (30%)</span> is if inflation keeps rising and RBI has to raise rates — returns shrink. <span class="danger">Scenario C (20%)</span> is a global shock — markets fall. We plan for all three so we're not surprised by any of them.</p>
+    <p>One thing to know: <strong>mid caps are priced at ~30x earnings right now</strong> — that's elevated. Not bubble territory, but it means future returns will be more modest than the last 5 years. This is baked into every number you'll see below.</p>
+  </div>
+
   <hr class="divider">
 
   <!-- ═══════════════════ AGENT B: FUND MANAGERS ═══════════════════ -->
@@ -423,6 +462,13 @@
         <div class="tag yellow">Heavy sector concentration: electrical equipment 13.38%, capital markets 12.5%</div>
       </div>
     </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT THIS MEANS FOR YOU</div>
+    <p>The fund manager is the person actually picking stocks with your money. Think of them as a <strong>chef running a restaurant</strong>. Would you rather eat at a restaurant where the head chef has been cooking for 9.5 years in that kitchen, or one where the chef joined 3.5 years ago during the easiest market conditions in a decade?</p>
+    <p><span class="highlight">Shreyash Devalkar (Axis)</span> has been managing this fund since 2016 — through demonetisation, COVID, rising rates, everything. You know what you're getting. His style is <strong>"quality first"</strong> — he won't chase fast-moving themes, but your money doesn't get destroyed in bad markets either.</p>
+    <p><span class="warn">Cheenu Gupta (HSBC)</span> joined in November 2022. Since then, markets have only gone up. His 18.66% 5-year return looks great, but <strong>roughly half of that 5-year window was before he even took charge</strong>. We genuinely don't know how he handles a rough market. That's not a knock — just an honest data gap.</p>
   </div>
 
   <hr class="divider">
@@ -489,6 +535,14 @@
     </div>
   </div>
 
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT THIS MEANS FOR YOU</div>
+    <p>The holdings tables show <strong>what's actually inside each fund</strong> — the companies your money is sitting in. Instead of trusting the fund name, we x-ray through to the actual stocks and ask: "how does each company do in each scenario?"</p>
+    <p><span class="highlight">Axis Mid Cap</span> is spread across quality businesses — a private bank (Federal Bank), a hospital (Fortis), an exchange (MCX), power infrastructure (GE Vernova), software (Persistent). Different sectors, different risk types. If one area has a bad year, the others cushion it. Also notice the <strong>~16% sitting in derivatives / cash</strong> — that's Devalkar being a bit cautious given elevated valuations. That's actually a good sign.</p>
+    <p><span class="warn">HSBC Mid Cap</span> has two giant sector bets — <strong>electrical equipment (13.4%)</strong> and <strong>capital markets (12.5%)</strong>. Together that's 25%+ in two themes. If those themes cool off (Scenario B or C), HSBC gets hit harder than Axis. Also, Nykaa is a 5% position — it's a high-PE consumer internet stock that's very sensitive to market mood swings.</p>
+    <p>The <span class="highlight">~27% overlap</span> means if you switched, you'd essentially be paying tax and fees to own 73% new stocks and keep 27% of what you already had. Not great bang for your friction buck.</p>
+  </div>
+
   <hr class="divider">
 
   <!-- ═══════════════════ AGENT D: SYNTHESIS ═══════════════════ -->
@@ -537,6 +591,13 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT THIS MEANS FOR YOU</div>
+    <p>PWE (Probability-Weighted Expected Return) is just a <strong>realistic average return</strong> that accounts for all three scenarios rather than assuming the best case. We multiply each scenario's return by its probability and add them up.</p>
+    <p><span class="highlight">Axis PWE = 9.39%</span> · <span class="warn">HSBC PWE = 8.53%</span>. Axis wins. Yes, HSBC has a higher best-case return in Scenario A (18.2% vs 16.9%) — but it also has a much worse worst-case (-4.8% vs -1.9%). <strong>HSBC is a higher-variance bet.</strong> For your FIRE goal, consistent compounding beats boom-bust.</p>
+    <p>The "dispersion" numbers (18.8 vs 23.0) are like a <strong>turbulence score on a flight</strong>. Axis is a smoother ride. HSBC has wider swings. Both land, but you'll lose less sleep with Axis.</p>
   </div>
 
   <hr class="divider">
@@ -600,6 +661,14 @@
         <div class="flag-desc">The SIP mandate is clear: SIPs never stop. Switching creates LTCG friction (~1.5%), resets cost basis, and adds execution risk. Given both funds are HOLD-rated, inaction is the correct action. Doing nothing is a decision — and in this case, the right one.</div>
       </div>
     </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE BOTTOM LINE</div>
+    <p>Imagine you're at a restaurant and you've been eating the Axis thali for years — it's solid, you know exactly how it tastes, good nutrition, reasonable price. Now a new dish (HSBC) looks flashy, smells amazing, and the last guy who ordered it said it was the best meal of his life. But he only ordered it during the restaurant's best week ever. You don't know how it tastes on a regular Tuesday.</p>
+    <p>The math is clear: <span class="highlight">switching costs you ~1.5% of your entire investment upfront</span> in tax. Then HSBC compounds at a lower PWE for 11 years. At FIRE age 40, you end up with a <span class="danger">2.424× multiplier instead of 2.684×</span>. On ₹10 lakh invested today, that's roughly <strong>₹2.6 lakh less wealth at FIRE</strong>. That's the real cost of acting on FOMO.</p>
+    <p>The three behavioral flags — <span class="warn">recency bias</span> (chasing recent returns), <span class="warn">shiny object syndrome</span> (hot capex theme), and <span class="warn">action bias</span> (feeling like you must do something) — are all firing at once. When all three fire together, <strong>the correct answer is almost always: do nothing.</strong></p>
+    <p><span class="highlight">Stay with Axis. Keep the SIP running. Don't touch it.</span></p>
   </div>
 
   <hr class="divider">
