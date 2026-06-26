@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fund Manager Deep Dive — Portfolio Analysis | 26 Jun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --purple: #c084fc;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #0d1b2e 0%, #111827 100%); border-bottom: 1px solid var(--border); padding: 28px 40px; }
+  .header-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: var(--muted); max-width: 780px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { display: inline-block; padding: 5px 14px; border-radius: 20px; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
+  .chip.green { background: rgba(52,211,153,0.12); border: 1px solid var(--green); color: var(--green); }
+  .chip.yellow { background: rgba(251,191,36,0.12); border: 1px solid var(--yellow); color: var(--yellow); }
+  .chip.red { background: rgba(248,113,113,0.12); border: 1px solid var(--red); color: var(--red); }
+  .chip.accent { background: rgba(56,189,248,0.12); border: 1px solid var(--accent); color: var(--accent); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 16px; }
+  .card-title { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 16px; letter-spacing: 0.05em; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid2, .grid3 { grid-template-columns: 1fr; } .header { padding: 20px 16px; } .container { padding: 20px 12px; } }
+  .kv { display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid rgba(30,45,69,0.5); gap: 12px; }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); font-size: 12px; flex-shrink: 0; }
+  .kv .v { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; text-align: right; }
+  .kv .v.green { color: var(--green); }
+  .kv .v.red { color: var(--red); }
+  .kv .v.yellow { color: var(--yellow); }
+  .kv .v.accent { color: var(--accent); }
+  .kv .v.purple { color: var(--purple); }
+  .kv .v.muted { color: var(--muted); }
+
+  /* Manager hero card */
+  .manager-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
+  .manager-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  .manager-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .manager-role { font-size: 12px; color: var(--muted); }
+  .manager-fund { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-top: 4px; }
+  .conviction-badge { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 6px; }
+  .conviction-badge.high { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .conviction-badge.medium { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .conviction-badge.low { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .manager-body { padding: 20px 24px; }
+
+  /* Score bar */
+  .score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .score-label { font-size: 11px; color: var(--muted); width: 140px; flex-shrink: 0; }
+  .score-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 3px; }
+  .score-val { font-family: var(--mono); font-size: 11px; font-weight: 700; width: 40px; text-align: right; flex-shrink: 0; }
+
+  /* Philosophy box */
+  .philosophy { background: var(--surface2); border-radius: 6px; padding: 16px; margin-bottom: 14px; }
+  .philosophy-title { font-family: var(--mono); font-size: 10px; color: var(--accent2); letter-spacing: 0.1em; margin-bottom: 10px; }
+  .philosophy p { font-size: 13px; color: var(--text); line-height: 1.8; }
+  .philosophy ul { margin-left: 18px; margin-top: 8px; }
+  .philosophy ul li { font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 4px; }
+
+  /* Performance table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  th.right { text-align: right; }
+  td { padding: 7px 10px; border-bottom: 1px solid rgba(30,45,69,0.4); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  td.right { text-align: right; font-family: var(--mono); }
+  .pos { color: var(--green); font-weight: 700; font-family: var(--mono); }
+  .neg { color: var(--red); font-weight: 700; font-family: var(--mono); }
+  .neutral { color: var(--yellow); font-weight: 700; font-family: var(--mono); }
+  .alpha-col { color: var(--accent); font-weight: 700; font-family: var(--mono); }
+
+  /* Alert */
+  .alert { border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 12px; line-height: 1.7; }
+  .alert.warn { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.3); color: var(--yellow); }
+  .alert.info { background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.3); color: var(--accent); }
+  .alert.danger { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+  .alert.success { background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.3); color: var(--green); }
+  .alert strong { font-weight: 700; }
+
+  /* ELI15 */
+  .eli15 { background: rgba(56,189,248,0.05); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 16px 0; }
+  .eli15-label { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 6px; }
+  .eli15 p { font-size: 13px; color: var(--text); line-height: 1.8; }
+
+  /* Framework cards */
+  .framework { background: var(--surface2); border-radius: 8px; padding: 18px; margin-bottom: 12px; border-left: 3px solid var(--accent2); }
+  .framework-title { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--accent2); margin-bottom: 10px; }
+  .framework p { font-size: 12px; color: var(--text); line-height: 1.8; margin-bottom: 8px; }
+  .framework p:last-child { margin-bottom: 0; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-family: var(--mono); margin: 2px; }
+  .tag.green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .tag.red { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag.accent { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .tag.purple { background: rgba(192,132,252,0.12); color: var(--purple); border: 1px solid rgba(192,132,252,0.3); }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* Verdict strip */
+  .verdict-strip { background: var(--surface2); border-radius: 6px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 8px; }
+  .verdict-text { font-size: 13px; color: var(--text); }
+  .verdict-rating { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+
+  /* SPIVA callout */
+  .spiva-box { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.25); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .spiva-num { font-family: var(--mono); font-size: 42px; font-weight: 800; color: var(--red); line-height: 1; }
+  .spiva-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Questions */
+  .question { background: var(--surface2); border-left: 3px solid var(--yellow); border-radius: 0 6px 6px 0; padding: 14px 16px; margin-bottom: 10px; }
+  .question-num { font-family: var(--mono); font-size: 10px; color: var(--yellow); margin-bottom: 4px; }
+  .question p { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+  /* Regime bar */
+  .bar-wrap { margin-bottom: 8px; }
+  .bar-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 11px; }
+  .bar-track { height: 5px; background: rgba(30,45,69,0.8); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+
+  .provenance { font-family: var(--mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 20px; margin-top: 24px; line-height: 2.0; }
+  .provenance a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">FUND MANAGER DEEP DIVE &nbsp;|&nbsp; 26 JUN 2026 &nbsp;|&nbsp; SOURCE: 30+ PRIMARY SOURCES · SEBI DISCLOSURES · ACADEMIC LITERATURE</div>
+  <h1>Fund Manager Analysis — Evidence-Based Profile</h1>
+  <div class="subtitle">Documented investment philosophies, track records, professional evaluation frameworks, and honest research gaps for the five funds in your portfolio. Covers Axis Midcap, Mirae Asset L&M, Bandhan Small Cap, Quant Quantamental, and Quant ELSS.</div>
+  <div class="chips">
+    <span class="chip green">Strongest: Neelesh Surana (Mirae) — 10Y alpha ~9%</span>
+    <span class="chip yellow">Watch: AUM creep — Bandhan ₹27,219 Cr at limit</span>
+    <span class="chip red">Governance: Quant SEBI settlement — not exonerated</span>
+    <span class="chip accent">SPIVA 2025: 82% of active mid/small-cap funds underperformed over 10Y</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════ -->
+  <!-- CONTEXT SETTER -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§0 &nbsp; Why Most Fund Analysis Is Wrong</div>
+
+  <div class="card">
+    <div class="card-title">// THE BASELINE PROBLEM — WHAT THE DATA ACTUALLY SAYS</div>
+    <div class="grid3">
+      <div class="spiva-box">
+        <div class="spiva-num">84%</div>
+        <div class="spiva-label">of Indian active funds underperformed their benchmark over 1 year (SPIVA 2025)</div>
+      </div>
+      <div class="spiva-box">
+        <div class="spiva-num">87%</div>
+        <div class="spiva-label">underperformed over 5 years (SPIVA India Year-End 2025)</div>
+      </div>
+      <div class="spiva-box">
+        <div class="spiva-num">82%</div>
+        <div class="spiva-label">of mid/small-cap funds underperformed over 10 years (SPIVA 2025)</div>
+      </div>
+    </div>
+
+    <div class="alert warn" style="margin-top:14px;">
+      <strong>What this means for your portfolio:</strong> You own funds in the top 13–18% that have outperformed over a decade.
+      The critical questions are: (1) Is this skill or systematic factor exposure that any index could replicate?
+      (2) Does the skill persist as AUM grows? (3) Can you tell which it is before it stops working?
+      This report attempts to answer those questions with evidence.
+    </div>
+
+    <div class="philosophy" style="margin-top:14px;">
+      <div class="philosophy-title">// WHY "ALPHA" IS OFTEN NOT ALPHA</div>
+      <p>Professional fund analysts decompose returns using the <strong>Carhart 4-Factor Model</strong>:</p>
+      <p style="margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--accent2);padding:10px;background:rgba(10,14,26,0.5);border-radius:4px;">
+        Return = Risk-Free Rate + β(Market) + β(SMB: Size) + β(HML: Value) + β(MOM: Momentum) + <strong style="color:var(--green);">True Alpha</strong>
+      </p>
+      <ul style="margin-top:10px;">
+        <li>A small-cap fund beating the Nifty 50 is <em>not</em> generating alpha — it's earning a <strong>size premium (SMB)</strong> that any small-cap index fund captures.</li>
+        <li>A fund beating its benchmark during a quality-factor bull run (2016–2021) may simply have <strong>quality factor loading</strong>, not manager skill.</li>
+        <li>Quant's high-turnover strategy likely has significant <strong>momentum factor (MOM)</strong> loading — meaning some of its "alpha" could be replicated by a momentum index fund.</li>
+        <li>The <strong>residual after all four factors</strong> is genuine alpha. For most Indian funds, this residual is near zero or negative after fees.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- MANAGER 1: AXIS MIDCAP -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§1 &nbsp; Axis Mid Cap — Shreyash Devalkar</div>
+
+  <div class="manager-card">
+    <div class="manager-header">
+      <div>
+        <div class="manager-name">Shreyash Devalkar</div>
+        <div class="manager-role">Head of Equity, Axis AMC &nbsp;·&nbsp; Managing Axis Midcap since Nov 2016</div>
+        <div class="manager-fund">AXIS MID CAP FUND — DIRECT PLAN &nbsp;|&nbsp; AUM: ₹32,852 Cr</div>
+        <div style="margin-top:8px;">
+          <span class="tag accent">Quality + Growth philosophy</span>
+          <span class="tag green">9Y track record</span>
+          <span class="tag yellow">Modest net alpha (~0.87%)</span>
+        </div>
+      </div>
+      <div class="conviction-badge medium">MEDIUM CONVICTION</div>
+    </div>
+
+    <div class="manager-body">
+      <div class="grid2">
+        <div>
+          <div class="philosophy">
+            <div class="philosophy-title">// DOCUMENTED INVESTMENT PHILOSOPHY</div>
+            <p><strong>Core filter</strong>: "Quality and Growth" — explicitly excludes high-cyclicality, asset-heavy, debt-laden businesses. Devalkar screens on:</p>
+            <ul>
+              <li>ROE (Return on Equity), cash flow quality, asset turnover</li>
+              <li>Capital allocation discipline, management track record</li>
+              <li>Corporate governance, stakeholder value creation</li>
+              <li>Sustainable earnings trajectory (measured through cycles)</li>
+            </ul>
+            <p style="margin-top:10px;"><strong>Portfolio construction</strong>: 70–90 stocks (expanded from 40–60 as AUM grew). Sector allocation emerges bottom-up, no macro overlay.</p>
+            <p style="margin-top:8px;"><strong>Selling discipline</strong>: Triggers = deterioration in competitive advantage, capital allocation misstep, governance concerns — NOT valuation alone. Will hold quality at premium valuations (deliberately).</p>
+            <p style="margin-top:8px;"><strong>Key co-managers</strong>: Nitin Arora (Aug 2023), Krishnaa N (Mar 2024 — handles foreign securities exposure, not primary domestic picker). Devalkar remains the architect.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">// TRACK RECORD (DIRECT PLAN)</div>
+          <table>
+            <thead><tr><th>Period</th><th class="right">Fund</th><th class="right">Benchmark</th><th class="right">Alpha</th></tr></thead>
+            <tbody>
+              <tr><td>Since inception (Nov 2016)</td><td class="right pos">18.90%</td><td class="right">18.03%</td><td class="right alpha-col">+0.87%</td></tr>
+              <tr><td>5 Year</td><td class="right pos">16.19%</td><td class="right">~15.5%</td><td class="right alpha-col">~+0.7%</td></tr>
+              <tr><td>3 Year</td><td class="right neutral">18.64%</td><td class="right">—</td><td class="right neutral">Peer lag</td></tr>
+              <tr><td>CY2021</td><td class="right neg">–5.1%</td><td class="right">—</td><td class="right neg">Sharp lag</td></tr>
+              <tr><td>CY2022</td><td class="right neg">–5.1%</td><td class="right">—</td><td class="right neg">Style drag</td></tr>
+              <tr><td>CY2023</td><td class="right pos">+29.6%</td><td class="right">—</td><td class="right pos">Recovery</td></tr>
+              <tr><td>CY2024</td><td class="right pos">~+30%</td><td class="right">—</td><td class="right pos">Strong</td></tr>
+            </tbody>
+          </table>
+          <div class="alert warn" style="margin-top:12px;font-size:11px;">
+            <strong>Net alpha of ~0.87% annualized since inception</strong> — against a Direct Plan expense ratio of 0.57%. After fees, genuine alpha is ~0.30%. This is thin for an active fund. The 2021–22 underperformance was style-driven (quality factor lagged cyclicals), not stock-selection failure.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:4px;">
+        <div class="card-title">// SCORES</div>
+        <div class="score-row"><span class="score-label">Track record length</span><div class="score-track"><div class="score-fill" style="width:80%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">8/10</span></div>
+        <div class="score-row"><span class="score-label">Philosophy clarity</span><div class="score-track"><div class="score-fill" style="width:90%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9/10</span></div>
+        <div class="score-row"><span class="score-label">Net alpha magnitude</span><div class="score-track"><div class="score-fill" style="width:40%;background:var(--yellow);"></div></div><span class="score-val" style="color:var(--yellow);">4/10</span></div>
+        <div class="score-row"><span class="score-label">Alpha consistency (IR)</span><div class="score-track"><div class="score-fill" style="width:50%;background:var(--yellow);"></div></div><span class="score-val" style="color:var(--yellow);">5/10</span></div>
+        <div class="score-row"><span class="score-label">AUM discipline</span><div class="score-track"><div class="score-fill" style="width:40%;background:var(--red);"></div></div><span class="score-val" style="color:var(--red);">4/10</span></div>
+        <div class="score-row"><span class="score-label">Governance</span><div class="score-track"><div class="score-fill" style="width:90%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9/10</span></div>
+      </div>
+
+      <div class="verdict-strip">
+        <span class="verdict-text">The philosophy is clear and disciplined. The net alpha is thin. At ₹32,852 Cr AUM, midcap alpha generation is increasingly hard. You're paying for Devalkar's discipline, not extraordinary stock-picking.</span>
+        <span class="verdict-rating" style="color:var(--yellow);">HOLD — WATCH AUM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Devalkar is like a chef who only uses premium, fresh ingredients — never frozen, never processed. His food is reliably good.
+    But his "edge" over other restaurants (the benchmark) is only about ₹8 per plate (0.87% alpha). After he pays for his premium ingredients (0.57% expense ratio),
+    you're paying extra for about ₹3 of genuine improvement. It's still positive — but it's not miraculous. The 2021–22 bad years happened because everyone else
+    went to a street food festival (cyclical small-caps) and he refused to serve junk food. He was right about quality — the festival is over.</p>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- MANAGER 2: MIRAE ASSET -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§2 &nbsp; Mirae Asset Large &amp; Midcap — Neelesh Surana</div>
+
+  <div class="manager-card">
+    <div class="manager-header">
+      <div>
+        <div class="manager-name">Neelesh Surana</div>
+        <div class="manager-role">CIO — Mirae Asset India &nbsp;·&nbsp; Managing since fund inception Jul 2010 &nbsp;·&nbsp; 18+ years at Mirae Asset</div>
+        <div class="manager-fund">MIRAE ASSET LARGE &amp; MIDCAP FUND — DIRECT PLAN &nbsp;|&nbsp; AUM: ₹42,792 Cr</div>
+        <div style="margin-top:8px;">
+          <span class="tag green">Longest track record in portfolio</span>
+          <span class="tag green">~9% 10Y alpha over benchmark</span>
+          <span class="tag green">AUM discipline (closed fund 2020–2024)</span>
+        </div>
+      </div>
+      <div class="conviction-badge high">HIGH CONVICTION</div>
+    </div>
+
+    <div class="manager-body">
+      <div class="grid2">
+        <div>
+          <div class="philosophy">
+            <div class="philosophy-title">// DOCUMENTED INVESTMENT PHILOSOPHY</div>
+            <p><strong>Style</strong>: Bottom-up quality growth. Surana explicitly targets companies avoiding: high cyclicality, asset-heavy models, debt-laden balance sheets, poor cash flow, low ROEs, sub-par management.</p>
+            <ul>
+              <li><strong>Positive screens</strong>: Asset-light businesses, consistent cash flow, high ROE, capital allocation discipline, strong management pedigree</li>
+              <li><strong>Not a value investor</strong>: Willing to pay fair prices for quality growth. Earnings growth of ~12% expected (BFSI, metals, telecom, consumer).</li>
+              <li><strong>Diversified bottom-up</strong>: Sector allocation is output of stock selection, not top-down macro call. No thematic concentration.</li>
+              <li><strong>Risk-awareness</strong>: Jun 2025 interview — explicitly against concentrated bets and thematic funds at current market levels.</li>
+            </ul>
+            <p style="margin-top:10px;"><strong>Co-manager</strong>: Ankit Jain (since Jan 2019) handles day-to-day execution. Surana sets overall strategy.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">// TRACK RECORD — THE STRONGEST IN YOUR PORTFOLIO</div>
+          <table>
+            <thead><tr><th>Period</th><th class="right">Fund</th><th class="right">Benchmark (N.LM250)</th><th class="right">Alpha</th></tr></thead>
+            <tbody>
+              <tr><td>10-Year CAGR</td><td class="right pos">17.87%</td><td class="right">8.98%</td><td class="right alpha-col" style="font-size:14px;font-weight:800;">+8.89%</td></tr>
+              <tr><td>5 Year</td><td class="right pos">13.70%</td><td class="right">—</td><td class="right pos">Strong</td></tr>
+              <tr><td>3 Year</td><td class="right pos">16.85%</td><td class="right">—</td><td class="right pos">Strong</td></tr>
+              <tr><td>1 Year</td><td class="right neutral">6.12%</td><td class="right">—</td><td class="right neutral">Moderate</td></tr>
+            </tbody>
+          </table>
+          <div class="alert success" style="margin-top:12px;font-size:11px;">
+            <strong>10-year alpha of +8.89% annualized</strong> vs benchmark is among the best documented figures in the Indian large-midcap category. At 10 years, survivorship bias and luck effects diminish significantly — this is the most credible evidence of skill in your portfolio.
+          </div>
+          <div class="alert info" style="font-size:11px;">
+            <strong>AUM discipline signal:</strong> Fund was closed to new investments (lumpsum/SIP) Nov 2020 – Aug 2024 — nearly 4 years — because Surana decided AUM had grown too large to maintain return characteristics. Most AMCs never do this. Reopened Aug 2024 after investable universe doubled.
+          </div>
+        </div>
+      </div>
+
+      <div class="card-title">// SCORES</div>
+      <div class="score-row"><span class="score-label">Track record length</span><div class="score-track"><div class="score-fill" style="width:95%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9.5/10</span></div>
+      <div class="score-row"><span class="score-label">Philosophy clarity</span><div class="score-track"><div class="score-fill" style="width:85%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">8.5/10</span></div>
+      <div class="score-row"><span class="score-label">Net alpha magnitude</span><div class="score-track"><div class="score-fill" style="width:95%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9.5/10</span></div>
+      <div class="score-row"><span class="score-label">Alpha consistency (IR)</span><div class="score-track"><div class="score-fill" style="width:70%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">7/10</span></div>
+      <div class="score-row"><span class="score-label">AUM discipline</span><div class="score-track"><div class="score-fill" style="width:100%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">10/10</span></div>
+      <div class="score-row"><span class="score-label">Governance</span><div class="score-track"><div class="score-fill" style="width:95%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9.5/10</span></div>
+
+      <div class="verdict-strip">
+        <span class="verdict-text">The 10-year alpha (~9% annualized) is the strongest documented evidence of genuine skill in this portfolio. The AUM discipline decision (closing fund for 4 years) is rare and investor-aligned. Primary risk: rolling return consistency is "good but not always consistent" — there are windows of underperformance. Now fully open, AUM creep is the key risk to monitor.</span>
+        <span class="verdict-rating" style="color:var(--green);">STRONG HOLD</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Surana is the equivalent of a restaurant that was so good it had a 4-year waiting list — and turned away money at the door when it got too popular, rather than sacrificing quality.
+    Over 10 years, he's outperformed the index by 9% a year. That's like the index returning 9% and him returning 18%. Compounded over 10 years, that's the difference between your ₹1L becoming ₹2.37L (index) vs ₹5.23L (Surana). The one honest caveat: he doesn't outperform every year, and the fund is now very large again. But among your managers, he has the clearest and strongest case for genuine skill.</p>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- MANAGER 3: BANDHAN SC -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§3 &nbsp; Bandhan Small Cap — Manish Gunwani</div>
+
+  <div class="manager-card">
+    <div class="manager-header">
+      <div>
+        <div class="manager-name">Manish Gunwani</div>
+        <div class="manager-role">CIO Equity, Bandhan AMC &nbsp;·&nbsp; Joined Jan 2023 &nbsp;·&nbsp; 30+ years experience (Nippon, IDFC, ICICI Pru)</div>
+        <div class="manager-fund">BANDHAN SMALL CAP FUND — DIRECT PLAN &nbsp;|&nbsp; AUM: ₹27,219 Cr &nbsp;|&nbsp; TRIPWIRE AT ₹30,000 CR</div>
+        <div style="margin-top:8px;">
+          <span class="tag green">GARP — explicit PE ceiling 25–30x</span>
+          <span class="tag green">Stress test: 3 days to liquidate 50%</span>
+          <span class="tag yellow">Bandhan track record: only 3 years</span>
+          <span class="tag red">AUM approaching size limit</span>
+        </div>
+      </div>
+      <div class="conviction-badge medium">MEDIUM CONVICTION</div>
+    </div>
+
+    <div class="manager-body">
+      <div class="grid2">
+        <div>
+          <div class="philosophy">
+            <div class="philosophy-title">// DOCUMENTED GARP PHILOSOPHY — THREE PILLARS</div>
+            <p><strong>Pillar 1 — Growth</strong>: Companies with demonstrated, sustainable earnings growth. Small caps with pricing power and expanding addressable market. Not speculative growth — must be trackable through financials.</p>
+            <p style="margin-top:8px;"><strong>Pillar 2 — Quality</strong>: Balance sheet strength, management track record, return metrics. Avoids highly leveraged, speculative small caps. This eliminates the highest-risk decile of the small-cap universe.</p>
+            <p style="margin-top:8px;"><strong>Pillar 3 — Reasonable Valuation</strong>: <strong>Explicit PE ceiling: 25–30x.</strong> Will not generally buy stocks above market average multiple. Goal: superior quality at market-average valuations (not premium valuations like Axis Midcap's approach).</p>
+            <p style="margin-top:10px;"><strong>Macro overlay</strong> (unusual for small-cap): Monitors 4–5 macro indicators — credit spreads (mean-reverting), currency, historical return patterns, volatility levels (VIX). Increases equity allocation when spreads wide + volatility elevated; reduces when tight + low.</p>
+            <p style="margin-top:8px;"><strong>Diversification cap</strong>: Top 10 stocks &lt;30% of portfolio. Reflects small-cap risk management — concentration + small caps = catastrophic downside.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">// PERFORMANCE + STRESS TEST DATA</div>
+          <table>
+            <thead><tr><th>Period</th><th class="right">Return</th><th class="right">Note</th></tr></thead>
+            <tbody>
+              <tr><td>1 Year</td><td class="right neutral">9.86%</td><td class="right">Moderate</td></tr>
+              <tr><td>3 Year</td><td class="right pos">29.61%</td><td class="right">Alpha ratio 4.13</td></tr>
+              <tr><td>5 Year</td><td class="right pos">22.09%</td><td class="right">Strong</td></tr>
+            </tbody>
+          </table>
+
+          <div class="alert success" style="margin-top:12px;font-size:11px;">
+            <strong>SEBI Stress Test (Mar 2024)</strong>: Bandhan SC = <strong>2 days to liquidate 25%, 3 days to liquidate 50%</strong>. Category average: 13.7 days for 50%. This is among the best liquidity profiles in the small-cap category — a direct result of GARP's quality filter keeping more-liquid small caps in the portfolio.
+          </div>
+
+          <div class="alert warn" style="font-size:11px;">
+            <strong>AUM concern</strong>: At ₹27,219 Cr and growing ~₹500–700 Cr/quarter, the fund approaches ₹30,000 Cr where small-cap execution becomes materially harder. The stress test was at ~₹10,000–14,000 Cr AUM — liquidity profile will have deteriorated since. The tripwire (your SIP cut at ₹30k Cr) is appropriately set.
+          </div>
+
+          <div class="alert info" style="font-size:11px;">
+            <strong>Context at Nippon</strong>: Gunwani's tenure at Nippon India (2017–2022) improved the equity franchise broadly — equity AUM grew from small base. However, granular year-by-year alpha data for specific funds during his Nippon tenure is not publicly aggregated. The 30+ year track record is cited widely but cannot be independently decomposed fund-by-fund in public sources.
+          </div>
+        </div>
+      </div>
+
+      <div class="card-title">// SCORES</div>
+      <div class="score-row"><span class="score-label">Track record length</span><div class="score-track"><div class="score-fill" style="width:50%;background:var(--yellow);"></div></div><span class="score-val" style="color:var(--yellow);">5/10</span></div>
+      <div class="score-row"><span class="score-label">Philosophy clarity</span><div class="score-track"><div class="score-fill" style="width:90%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9/10</span></div>
+      <div class="score-row"><span class="score-label">Testable constraints</span><div class="score-track"><div class="score-fill" style="width:90%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9/10</span></div>
+      <div class="score-row"><span class="score-label">Liquidity / stress test</span><div class="score-track"><div class="score-fill" style="width:95%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9.5/10</span></div>
+      <div class="score-row"><span class="score-label">AUM discipline</span><div class="score-track"><div class="score-fill" style="width:55%;background:var(--yellow);"></div></div><span class="score-val" style="color:var(--yellow);">5.5/10</span></div>
+      <div class="score-row"><span class="score-label">Governance</span><div class="score-track"><div class="score-fill" style="width:90%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9/10</span></div>
+
+      <div class="verdict-strip">
+        <span class="verdict-text">GARP with an explicit PE ceiling is one of the most testable philosophies in Indian small-cap — you can verify it directly from the portfolio's P/E data each month. Bandhan track record is short (3 years) but Gunwani's career pedigree is deep. The AUM trajectory is the single biggest risk. Tripwire at ₹30,000 Cr is the right call.</span>
+        <span class="verdict-rating" style="color:var(--yellow);">HOLD — TRIPWIRE IMMINENT</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Gunwani is the fund manager who behaves most like a disciplined value investor in a small-cap world full of speculators. He has a speed limit (won't pay more than 25–30x earnings) and a seatbelt (top 10 stocks never more than 30% of the fund).
+    His GARP philosophy means he'll often miss the most exciting part of a small-cap rally (the speculative top) — but he'll also survive the crash better than most.
+    The stress test proves it: he can exit 50% of his portfolio in 3 days. Most small-cap funds need 2 weeks. The problem: he's getting too popular (₹27k Cr fund). At some point the crowd following him slows him down.</p>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- MANAGER 4: QUANT MF -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§4 &nbsp; Quant MF (ELSS + Quantamental) — Sandeep Tandon &amp; VLRT Framework</div>
+
+  <div class="manager-card">
+    <div class="manager-header">
+      <div>
+        <div class="manager-name">Sandeep Tandon</div>
+        <div class="manager-role">Founder &amp; CIO, Quant Mutual Fund &nbsp;·&nbsp; Committee management structure &nbsp;·&nbsp; SEBI settlement May 2026</div>
+        <div class="manager-fund">QUANT ELSS (AUM: ₹12,506 Cr · since 2000) &nbsp;+&nbsp; QUANT QUANTAMENTAL (AUM: ₹1,563 Cr · since May 2021)</div>
+        <div style="margin-top:8px;">
+          <span class="tag green">VLRT: genuinely differentiated framework</span>
+          <span class="tag red">SEBI front-running settlement</span>
+          <span class="tag red">~500% turnover = tax drag + opacity</span>
+          <span class="tag yellow">Quantamental fund: only 5 years old</span>
+        </div>
+      </div>
+      <div class="conviction-badge low">LOWER CONVICTION</div>
+    </div>
+
+    <div class="manager-body">
+      <div class="grid2">
+        <div>
+          <div class="philosophy">
+            <div class="philosophy-title">// VLRT FRAMEWORK — HOW IT ACTUALLY WORKS</div>
+            <p><strong>V — Valuation</strong>: Goes beyond conventional PE/PB. Proprietary cross-asset valuation comparisons. Claim: standard metrics "lead to inaccurate conclusions." Actual indicators not disclosed.</p>
+            <p style="margin-top:8px;"><strong>L — Liquidity</strong>: The most differentiated element. Tracks global and domestic money flows using "alternate data sources" — central bank balance sheets, FII flow patterns, credit creation, derivatives-implied liquidity. Measures whether global liquidity is expanding or contracting. Key insight: <em>liquidity dries up at market tops and bottoms</em>.</p>
+            <p style="margin-top:8px;"><strong>R — Risk Appetite</strong>: Options market signals (put/call ratios, IV term structure), cash market breadth, institutional positioning. Measures fear vs. greed cycles.</p>
+            <p style="margin-top:8px;"><strong>T — Timing</strong>: Cycle analytics using historical data going back "centuries." Identifies medium-term turning points by combining V, L, R signals.</p>
+            <p style="margin-top:10px;"><strong>Dynamic weighting (critical)</strong>: VLRT weights change by market regime. COVID example — March 2020: L + R = 90% weight, V = 10%. Rationale: valuation didn't matter during a liquidity crisis; what mattered was whether central banks would step in (they would).</p>
+            <p style="margin-top:8px;"><strong>Quantamental overlay</strong>: VLRT + factor scoring (Growth + Value + Quality factors) + human judgment. The Quantamental fund is the hybrid product.</p>
+            <p style="margin-top:8px;"><strong>Turnover consequence</strong>: Style-agnostic, high-conviction repositioning = ~500% portfolio turnover. The portfolio is fully replaced ~5 times per year. This generates significant STCG within the fund, which is a structural tax drag on NAV for Indian fund investors.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-title">// PERFORMANCE DATA</div>
+          <table>
+            <thead><tr><th>Fund / Period</th><th class="right">Return</th><th class="right">Note</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Quant ELSS (since Apr 2000)</strong></td><td class="right pos">14.58% CAGR</td><td class="right">Longest India ELSS track record</td></tr>
+              <tr><td>ELSS 5-year</td><td class="right pos">19.63%</td><td class="right">Alpha ratio 5.48</td></tr>
+              <tr><td>ELSS 3-year</td><td class="right pos">19.43%</td><td class="right">Sharpe 0.62</td></tr>
+              <tr><td>ELSS 1-year</td><td class="right neutral">9.93%</td><td class="right">Moderate</td></tr>
+              <tr><td><strong>Quant Quantamental (since May 2021)</strong></td><td class="right pos">19.48% CAGR</td><td class="right">Only 5Y data</td></tr>
+              <tr><td>Quantamental 3-year</td><td class="right pos">19.70%</td><td class="right">Strong</td></tr>
+              <tr><td>Quantamental 1-year</td><td class="right neutral">12.33%</td><td class="right">Moderate</td></tr>
+            </tbody>
+          </table>
+
+          <div class="alert danger" style="margin-top:12px;font-size:11px;">
+            <strong>SEBI Front-Running Settlement (May 2026)</strong>: Sandeep Tandon + HNI Sumana Paruchuri settled with SEBI (June 2024 investigation → May 2026 settlement). Settlement = fines paid, no admission of guilt, no further prosecution — but NOT exoneration. Front-running means external parties were trading ahead of Quant's large orders, creating adverse price impact for fund investors. This is a structural cost to fund returns that cannot be quantified from outside.
+          </div>
+          <div class="alert warn" style="font-size:11px;">
+            <strong>Stress test (SEBI Mar 2024)</strong>: Quant small-cap products require <strong>22 days to liquidate 50%</strong> — vs Bandhan's 3 days. High-turnover strategy paradoxically trades in less-liquid stocks. Net outflows ₹1,398 Cr immediately post-probe.
+          </div>
+        </div>
+      </div>
+
+      <div class="alert warn" style="margin-top:4px;">
+        <strong>The key unanswered question on VLRT:</strong> How much of Quant ELSS's extraordinary 2019–2024 returns is attributable to:
+        (a) Genuine VLRT regime-detection skill, (b) Momentum factor loading (high turnover naturally chases momentum),
+        (c) Small AUM at the time (could take large positions in less-liquid stocks before market impact), or (d) The extraordinary liquidity environment created by global central banks post-2020?
+        Without a Carhart factor decomposition, it is impossible to separate these. The framework is not independently verifiable.
+      </div>
+
+      <div class="card-title" style="margin-top:14px;">// SCORES</div>
+      <div class="score-row"><span class="score-label">Track record (ELSS)</span><div class="score-track"><div class="score-fill" style="width:90%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">9/10</span></div>
+      <div class="score-row"><span class="score-label">Framework differentiation</span><div class="score-track"><div class="score-fill" style="width:85%;background:var(--green);"></div></div><span class="score-val" style="color:var(--green);">8.5/10</span></div>
+      <div class="score-row"><span class="score-label">Framework transparency</span><div class="score-track"><div class="score-fill" style="width:20%;background:var(--red);"></div></div><span class="score-val" style="color:var(--red);">2/10</span></div>
+      <div class="score-row"><span class="score-label">Tax efficiency</span><div class="score-track"><div class="score-fill" style="width:10%;background:var(--red);"></div></div><span class="score-val" style="color:var(--red);">1/10</span></div>
+      <div class="score-row"><span class="score-label">Governance</span><div class="score-track"><div class="score-fill" style="width:25%;background:var(--red);"></div></div><span class="score-val" style="color:var(--red);">2.5/10</span></div>
+      <div class="score-row"><span class="score-label">Liquidity / stress test</span><div class="score-track"><div class="score-fill" style="width:30%;background:var(--red);"></div></div><span class="score-val" style="color:var(--red);">3/10</span></div>
+
+      <div class="verdict-strip">
+        <span class="verdict-text">VLRT is real and differentiated — but opaque. ELSS has the longest track record. But 500% turnover creates structural tax drag, governance is materially compromised by the SEBI settlement, and the framework cannot be independently verified. You already hold both funds (₹5.07L ELSS locked, ₹1.79L Quantamental active SIP ₹8k). Given user's decision to continue Quantamental at ₹8k, accept this with clear eyes on the governance risk.</span>
+        <span class="verdict-rating" style="color:var(--red);">HOLD (ELSS: LOCKED) · INFORMED HOLD (QUANT'L)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Quant MF is like a trading algorithm built by a maverick quant who found patterns others missed — and the returns prove it works. But imagine discovering the quant had a friend who could peek at his order book before he placed trades. That friend was the HNI who settled with SEBI. Does that mean the algorithm is bad? Not necessarily — the algorithm still ran, it just cost more in market impact than it should have. The honest position: the VLRT framework is probably real. The governance issue is also real. You're holding Quant ELSS anyway (locked) and continuing Quantamental at ₹8k/month — which is a reasonable small-allocation informed bet. Just don't add more without cleaner governance data.</p>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- SECTION 5: PROFESSIONAL FRAMEWORKS -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§5 &nbsp; Professional Fund Evaluation Frameworks</div>
+
+  <div class="card">
+    <div class="card-title">// WHAT CFA-LEVEL ANALYSTS ACTUALLY USE</div>
+
+    <div class="framework">
+      <div class="framework-title">FRAMEWORK 1 — INFORMATION RATIO (IR): THE MOST IMPORTANT METRIC</div>
+      <p><strong>Formula</strong>: IR = Active Return ÷ Tracking Error &nbsp;=&nbsp; (Fund Return – Benchmark Return) ÷ Std Dev of Active Return</p>
+      <p><strong>Why it beats raw alpha</strong>: A fund generating +3% alpha every single year has a high IR. A fund generating +8% one year and –4% the next has a low IR — despite the same average. IR rewards <em>consistency</em> of outperformance, not just magnitude. SEBI now mandates IR disclosure for all mutual fund schemes.</p>
+      <p><strong>Benchmarks</strong>: IR &gt; 0.5 = meaningful. IR &gt; 0.75 = strong. IR &gt; 1.0 = exceptional (rare in any market).</p>
+      <p><strong>Gap</strong>: Aggregated IR data for your specific funds is not freely accessible — requires Primeinvestor or Morningstar India premium subscription. This is the single most important data point you should get.</p>
+    </div>
+
+    <div class="framework">
+      <div class="framework-title">FRAMEWORK 2 — CARHART 4-FACTOR MODEL: SEPARATING SKILL FROM BETA</div>
+      <p><strong>Model</strong>: Return = Rf + β·Market + β·SMB (size) + β·HML (value) + β·MOM (momentum) + <strong>Alpha</strong></p>
+      <p><strong>What it reveals for your funds</strong>:</p>
+      <p>• <strong>Bandhan SC's 29% 3Y return</strong>: How much is small-cap beta (SMB)? In 2021–24, Nifty Smallcap 250 itself returned strongly. Strip out SMB factor and the genuine alpha may be much smaller than raw 29% suggests.</p>
+      <p>• <strong>Quant ELSS's strong returns</strong>: High-turnover, style-agnostic fund likely has large MOM factor loading. If so, a momentum index fund could replicate part of the return at lower cost and with fewer governance risks.</p>
+      <p>• <strong>Axis Midcap's 2016–2021 run</strong>: Likely had Quality factor loading (not in Carhart but in Fama-French 5-factor). The quality factor ran hot from 2016–2021, then gave back gains. How much of the 0.87% net alpha is genuine stock-picking vs. quality factor drift?</p>
+      <p><strong>Academic finding</strong>: Indian study (arXiv 2024) — applying Carhart with style drift adjustment shows residual alpha of only 0.02%/month for style-drifting Indian funds. Most "alpha" is unexplained factor exposure.</p>
+    </div>
+
+    <div class="framework">
+      <div class="framework-title">FRAMEWORK 3 — ROLLING RETURN HIT RATE</div>
+      <p><strong>Method</strong>: Calculate fund return for every possible 3-year window from inception. What % beat the benchmark?</p>
+      <p><strong>Why point-to-point returns mislead</strong>: A fund starting in 2019 and showing 5-year returns in 2024 captures the post-COVID bull run. Rolling returns eliminate start-date dependency.</p>
+      <p><strong>What to look for</strong>: 70%+ of 3-year rolling windows beating benchmark = strong. Mirae Asset L&M: "good but not always consistent" rolling outperformance per Primeinvestor. Axis Midcap: 2021–22 windows pulled down the rolling hit rate substantially.</p>
+      <p><strong>How to check</strong>: Value Research Online → Fund → "Rolling Returns" tab. Free for most data. This is the single most accessible tool available to you.</p>
+    </div>
+
+    <div class="framework">
+      <div class="framework-title">FRAMEWORK 4 — ACTIVE SHARE (CLOSET INDEXING DETECTION)</div>
+      <p><strong>Definition</strong>: % of portfolio holdings that differ from benchmark. 0% = pure index fund; 100% = completely different from benchmark.</p>
+      <p><strong>Thresholds</strong>: Above 60% = genuinely active. 20–60% = closet indexing (charging active fees for near-index returns). Below 20% = effectively passive.</p>
+      <p><strong>Estimated active share for your funds</strong>: Axis Midcap = high (70–90%), Mirae L&M = moderate-high, Bandhan SC = high (small-cap is inherently high active share), Quant = very high (style-agnostic, high turnover). None of your funds are likely closet indexers.</p>
+      <p><strong>Note</strong>: Indian AMCs don't mandatorily disclose active share. Above are inferences from portfolio structure. SEBI is likely to mandate this disclosure in future.</p>
+    </div>
+
+    <div class="framework">
+      <div class="framework-title">FRAMEWORK 5 — SEBI STRESS TEST (INDIA-SPECIFIC, MANDATORY)</div>
+      <p><strong>What it measures</strong>: Days required to liquidate 25% and 50% of portfolio at average daily trading volumes. Mandated monthly from March 2024.</p>
+      <p><strong>Why it matters more than 1-year returns for small-cap evaluation</strong>: During a market panic, a fund needing 50 days to liquidate 50% faces forced selling at progressively worse prices — creating NAV spiral. This is an existential risk for investors who need to redeem during a crisis.</p>
+      <table style="margin-top:10px;">
+        <thead><tr><th>Fund</th><th class="right">25% liquidation</th><th class="right">50% liquidation</th><th class="right">Rating</th></tr></thead>
+        <tbody>
+          <tr><td>Bandhan Small Cap</td><td class="right pos">2 days</td><td class="right pos">3 days</td><td class="right"><span class="tag green">EXCELLENT</span></td></tr>
+          <tr><td>Category average (small-cap)</td><td class="right neutral">—</td><td class="right neutral">13.7 days</td><td class="right"><span class="tag yellow">AVERAGE</span></td></tr>
+          <tr><td>Quant small-cap products</td><td class="right neg">—</td><td class="right neg">22 days</td><td class="right"><span class="tag red">POOR</span></td></tr>
+          <tr><td>Worst small-cap funds (Apr 2025)</td><td class="right neg">—</td><td class="right neg">25–57 days</td><td class="right"><span class="tag red">DANGEROUS</span></td></tr>
+        </tbody>
+      </table>
+      <div class="alert warn" style="margin-top:10px;font-size:11px;">Bandhan SC stress test was at ~₹10,000–14,000 Cr AUM. Now at ₹27,219 Cr — liquidity profile has deteriorated. Check updated stress test data in each month's fact sheet. If days-to-liquidate exceeds 8–10 days for 50%, that's a warning signal independent of the ₹30k Cr AUM tripwire.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- SECTION 6: INDIA-SPECIFIC RISKS -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§6 &nbsp; India-Specific Structural Considerations</div>
+
+  <div class="card">
+    <div class="card-title">// WHAT MAKES INDIAN MF EVALUATION DIFFERENT FROM GLOBAL FRAMEWORKS</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">Small/midcap inefficiency</span><span class="v green">Higher alpha opportunity vs developed markets — fewer analysts cover 500–2000 stock universe</span></div>
+        <div class="kv"><span class="k">SEBI categorization (2017)</span><span class="v accent">Rigidly defined: Large=top 100, Mid=101–250, Small=251+. Limits style drift but creates boundary dynamics</span></div>
+        <div class="kv"><span class="k">Domestic MF AUM growth</span><span class="v yellow">₹10L Cr → ₹65L Cr in 5 years. As domestic ownership rises, markets become less inefficient. Alpha harder to extract over time.</span></div>
+        <div class="kv"><span class="k">Liquidity premium</span><span class="v yellow">Small-cap outperformance over large-cap is partly a systematic risk factor (illiquidity premium) — not alpha. Cannot be compared apples-to-apples.</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Tax drag — high turnover funds</span><span class="v red">STCG at 20% for &lt;1 year holdings. Quant's ~500% turnover generates massive STCG within the fund, reducing NAV before distribution. This cost is invisible in raw return comparisons.</span></div>
+        <div class="kv"><span class="k">AUM thresholds</span><span class="v yellow">Small-cap: performance degrades above ₹10,000–15,000 Cr. Midcap: above ₹25,000–30,000 Cr. Bandhan (₹27,219 Cr) and Axis (₹32,852 Cr) are at these limits.</span></div>
+        <div class="kv"><span class="k">SPIVA persistence</span><span class="v red">Past outperformance does NOT predict future: SPIVA shows most top-quartile funds do not remain top-quartile. Survivorship bias inflates published averages.</span></div>
+        <div class="kv"><span class="k">Sector skill is real</span><span class="v green">Academic research shows sector/industry selection contributes ≥1/5 of alpha in Indian funds AND persists over time — suggesting genuine, repeatable skill exists in sector allocation.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- SECTION 7: HONEST RESEARCH GAPS -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§7 &nbsp; Honest Research Gaps — What We Don't Know</div>
+
+  <div class="card">
+    <div class="card-title">// WHERE THE EVIDENCE IS THIN OR UNAVAILABLE</div>
+    <div class="alert warn">
+      <strong>This section is important.</strong> The previous reports in this project stated conclusions without disclosing uncertainty. This corrects that.
+    </div>
+    <div style="margin-top:14px;">
+      <div class="kv"><span class="k">1. Information Ratios for all five funds</span><span class="v yellow">Not freely accessible. Requires Primeinvestor or Morningstar India premium. Despite SEBI mandating disclosure, aggregated IR data isn't in free public databases. This is the most important missing data point.</span></div>
+      <div class="kv"><span class="k">2. Factor-model (Carhart) decomposition</span><span class="v yellow">No public Carhart/Fama-French decomposition for any of these five funds. Academic papers exist at category level but not fund-specific. Without this, true alpha vs. factor exposure cannot be separated.</span></div>
+      <div class="kv"><span class="k">3. Gunwani's granular Nippon track record</span><span class="v yellow">Year-by-year alpha for Nippon India Growth Fund during his 2017–2022 tenure is not publicly aggregated. Practitioner consensus was positive but hard data is inaccessible.</span></div>
+      <div class="kv"><span class="k">4. Quant SEBI settlement terms</span><span class="v red">Exact monetary value, restrictions imposed, and scope of the settlement not disclosed in public documents. Cannot quantify governance risk precisely without this.</span></div>
+      <div class="kv"><span class="k">5. VLRT replicability</span><span class="v red">Quant's framework is proprietary and cannot be independently backtested or validated. There is no academic peer review of VLRT. Performance from 2019–2024 coincided with extraordinary global liquidity — cannot separate framework skill from macro tailwind.</span></div>
+      <div class="kv"><span class="k">6. Rolling return hit rates (specific funds)</span><span class="v yellow">Specific "% of 3-year rolling windows beating benchmark" data requires Value Research or Primeinvestor premium. Directional data (e.g., "Mirae is good but not always consistent") available; precise percentages are not.</span></div>
+      <div class="kv"><span class="k">7. Bandhan stress test post-₹20k Cr growth</span><span class="v yellow">March 2024 stress test was at lower AUM. Updated data (at ₹27,219 Cr) available in current fact sheet but not researched here. Check directly on Bandhan AMC website.</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- SECTION 8: THE RIGHT QUESTIONS -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§8 &nbsp; The Right Questions to Ask — What This Report Enables</div>
+
+  <div class="card">
+    <div class="card-title">// NOW THAT YOU KNOW THE FRAMEWORKS, ASK THESE</div>
+    <div class="question">
+      <div class="question-num">Q1 — AXIS MIDCAP</div>
+      <p>Net alpha of 0.87% annualized. Expense ratio 0.57% direct. After fees, genuine alpha ~0.30%. Is this worth the active management risk? Compare to: Nifty Midcap 150 Index Fund at 0.15–0.20% TER. If Devalkar retires or changes approach, what is the fund's moat? Check Value Research rolling returns — what % of 3Y windows beat the BSE Midcap 150 TRI?</p>
+    </div>
+    <div class="question">
+      <div class="question-num">Q2 — MIRAE ASSET L&M</div>
+      <p>10-year alpha of ~9% is exceptional. But has rolling return consistency deteriorated since the fund grew beyond ₹20,000 Cr? The AUM discipline decision (closing 2020–2024) is the strongest integrity signal — but the fund is now fully open and at ₹42,792 Cr. At what AUM does large+midcap alpha generation become structurally impossible? Check Primeinvestor's rolling return data for recent windows.</p>
+    </div>
+    <div class="question">
+      <div class="question-num">Q3 — BANDHAN SMALL CAP</div>
+      <p>Gunwani's PE ceiling (≤25–30x) is a testable claim. Does the current portfolio's weighted average PE actually sit below 30x? Check the latest fact sheet — if PE has drifted above 35x, the GARP discipline has broken down. Also: what is the current stress test result at ₹27,219 Cr AUM? If days-to-liquidate 50% has risen above 8 days, that's a red flag independent of the ₹30k Cr tripwire.</p>
+    </div>
+    <div class="question">
+      <div class="question-num">Q4 — QUANT (BOTH FUNDS)</div>
+      <p>Run a basic regression: how much of Quant ELSS's return since 2019 is explained by its momentum factor exposure? A simple check — compare ELSS returns to Nifty 200 Momentum 30 Index over the same period. If the momentum index tracked Quant closely, you're paying governance risk premium for beta you could buy cheaply. The VLRT framework may be real — but this comparison would tell you how much of the return is genuinely proprietary.</p>
+    </div>
+    <div class="question">
+      <div class="question-num">Q5 — PORTFOLIO LEVEL</div>
+      <p>SPIVA shows 82% of mid/small-cap funds underperformed over 10 years. You own three funds in the top 18%. The statistical question: what is the probability that all three remain in the top 18% over the next 10 years? SPIVA persistence studies suggest most top-quartile funds do not remain top-quartile. This doesn't mean you should sell — but it means the exit strategy (what triggers a sell) is as important as the entry analysis you've now done.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- SUMMARY TABLE -->
+  <!-- ═══════════════════════════════ -->
+  <div class="section-label">§9 &nbsp; Summary Comparison</div>
+
+  <div class="card">
+    <div class="card-title">// MANAGER SCORECARD — EVIDENCE-BASED</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Fund / Manager</th>
+          <th class="right">Evidence Quality</th>
+          <th class="right">Net Alpha</th>
+          <th class="right">AUM Risk</th>
+          <th class="right">Governance</th>
+          <th class="right">Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Mirae L&M / Surana</strong><br><span style="font-size:10px;color:var(--muted);">16Y track record · AUM discipline · 10Y alpha ~9%</span></td>
+          <td class="right"><span class="tag green">STRONGEST</span></td>
+          <td class="right pos">~+9% (10Y)</td>
+          <td class="right"><span class="tag yellow">HIGH (₹42k Cr)</span></td>
+          <td class="right"><span class="tag green">CLEAN</span></td>
+          <td class="right"><span class="tag green">STRONG HOLD</span></td>
+        </tr>
+        <tr>
+          <td><strong>Bandhan SC / Gunwani</strong><br><span style="font-size:10px;color:var(--muted);">GARP explicit · Stress test best-in-class · 3Y Bandhan data</span></td>
+          <td class="right"><span class="tag yellow">GOOD (SHORT)</span></td>
+          <td class="right pos">29.6% (3Y)</td>
+          <td class="right"><span class="tag red">CRITICAL (₹27k Cr)</span></td>
+          <td class="right"><span class="tag green">CLEAN</span></td>
+          <td class="right"><span class="tag yellow">HOLD · TRIPWIRE</span></td>
+        </tr>
+        <tr>
+          <td><strong>Axis Midcap / Devalkar</strong><br><span style="font-size:10px;color:var(--muted);">9Y track record · Quality+Growth · thin net alpha</span></td>
+          <td class="right"><span class="tag yellow">GOOD</span></td>
+          <td class="right neutral">~+0.87% (9Y)</td>
+          <td class="right"><span class="tag yellow">HIGH (₹33k Cr)</span></td>
+          <td class="right"><span class="tag green">CLEAN</span></td>
+          <td class="right"><span class="tag yellow">HOLD · WATCH AUM</span></td>
+        </tr>
+        <tr>
+          <td><strong>Quant ELSS / Tandon</strong><br><span style="font-size:10px;color:var(--muted);">Longest ELSS track record · VLRT opaque · SEBI settlement</span></td>
+          <td class="right"><span class="tag yellow">LONG BUT OPAQUE</span></td>
+          <td class="right pos">19.6% (5Y)</td>
+          <td class="right"><span class="tag yellow">MODERATE</span></td>
+          <td class="right"><span class="tag red">SETTLED</span></td>
+          <td class="right"><span class="tag red">HOLD (LOCKED)</span></td>
+        </tr>
+        <tr>
+          <td><strong>Quant Quantamental / Tandon</strong><br><span style="font-size:10px;color:var(--muted);">VLRT+factor hybrid · Only 5Y data · Same governance issues</span></td>
+          <td class="right"><span class="tag red">THIN (5Y)</span></td>
+          <td class="right pos">19.7% (3Y)</td>
+          <td class="right"><span class="tag green">LOW (₹1,563 Cr)</span></td>
+          <td class="right"><span class="tag red">SETTLED</span></td>
+          <td class="right"><span class="tag red">INFORMED HOLD</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- PROVENANCE -->
+  <!-- ═══════════════════════════════ -->
+  <div class="provenance">
+    SOURCES &amp; PROVENANCE<br>
+    Research conducted: 26 Jun 2026 · 73 web searches · 30+ primary sources<br>
+    <a href="https://www.axismf.com/fundmanagers/fund-manager-schemes-shreyash-devalkar">Axis MF — Fund Managers Page</a> ·
+    <a href="https://www.morningstar.in/posts/76554/axis-midcap-4-questions-for-shreyash-devalkar.aspx">Morningstar India — Devalkar Interview</a> ·
+    <a href="https://www.business-standard.com/markets/interviews/not-the-time-for-concentrated-bets-thematic-funds-mirae-s-neelesh-surana-125060100425_1.html">Business Standard — Surana Jun 2025</a> ·
+    <a href="https://www.miraeassetmf.co.in/docs/default-source/marketing-insights/mr-neelesh-suraana-cio---note---10-year-journey.pdf">Mirae Asset 10Y CIO Note</a> ·
+    <a href="https://www.valueresearchonline.com/stories/225322/indian-small-cap-space-best-manish-gunwani-bandhan-mutual-fund-interview/">Value Research — Gunwani Interview</a> ·
+    <a href="https://bandhanamc.com/about/executive-team/manish-gunwani/">Bandhan AMC — Gunwani Profile</a> ·
+    <a href="https://quant.in/investment-framework/">Quant MF — VLRT Framework</a> ·
+    <a href="https://www.businessworld.in/article/another-high-profile-front-running-case-sandeep-tandon-sumana-paruchuri-file-for-sebi-settlement-544442">BW Businessworld — Tandon Settlement</a> ·
+    <a href="https://www.spglobal.com/spdji/en/documents/spiva/spiva-india-scorecard-mid-year-2025.pdf">SPIVA India Year-End 2025</a> ·
+    <a href="https://arxiv.org/abs/2510.19619">arXiv — Indian MF Factor-Risk Shifting Study</a> ·
+    <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1356021">Fama &amp; French — Luck vs Skill (SSRN)</a><br>
+    This report is for personal investment research only. Not SEBI-registered investment advice.
+  </div>
+
+</div>
+</body>
+</html>
