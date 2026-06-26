@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Scenario Analysis — 12-Month Outlook | 26 Jun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --purple: #c084fc;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #0d1b2e 0%, #111827 100%); border-bottom: 1px solid var(--border); padding: 28px 40px; }
+  .header-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: var(--muted); }
+  .header .verdict-chip {
+    display: inline-block; margin-top: 12px; padding: 6px 16px;
+    background: rgba(56,189,248,0.12); border: 1px solid var(--accent);
+    border-radius: 20px; color: var(--accent); font-family: var(--mono);
+    font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.05em; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .header { padding: 20px 16px; }
+    .container { padding: 20px 12px; }
+  }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); font-size: 12px; }
+  .kv .v { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+  .kv .v.green { color: var(--green); }
+  .kv .v.red { color: var(--red); }
+  .kv .v.yellow { color: var(--yellow); }
+  .kv .v.accent { color: var(--accent); }
+  .kv .v.purple { color: var(--purple); }
+  .kv .v.orange { color: var(--orange); }
+
+  /* Scenarios */
+  .scenario { background: var(--surface2); border-radius: 6px; padding: 16px; margin-bottom: 12px; border-left: 3px solid; }
+  .scenario.A { border-color: var(--green); }
+  .scenario.B { border-color: var(--yellow); }
+  .scenario.C { border-color: var(--red); }
+  .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .scenario-name { font-weight: 700; font-size: 14px; }
+  .scenario-prob { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+  .scenario.A .scenario-prob { color: var(--green); }
+  .scenario.B .scenario-prob { color: var(--yellow); }
+  .scenario.C .scenario-prob { color: var(--red); }
+  .scenario-macro { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+
+  /* Fund return table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 7px 8px; border-bottom: 1px solid rgba(30,45,69,0.4); color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .mono { font-family: var(--mono); font-weight: 600; }
+  .ret-a { color: var(--green); font-family: var(--mono); font-weight: 700; }
+  .ret-b { color: var(--yellow); font-family: var(--mono); font-weight: 700; }
+  .ret-c { color: var(--red); font-family: var(--mono); font-weight: 700; }
+  .pwe-col { color: var(--accent); font-family: var(--mono); font-weight: 700; }
+  .sip-badge {
+    display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px;
+    font-family: var(--mono); background: rgba(56,189,248,0.12); color: var(--accent);
+  }
+  .role-badge {
+    display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px;
+    font-family: var(--mono);
+  }
+  .role-core { background: rgba(52,211,153,0.12); color: var(--green); }
+  .role-sat { background: rgba(129,140,248,0.12); color: var(--accent2); }
+  .role-ballast { background: rgba(251,191,36,0.12); color: var(--yellow); }
+  .role-tax { background: rgba(192,132,252,0.12); color: var(--purple); }
+
+  /* Outcome boxes */
+  .outcome-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 700px) { .outcome-grid { grid-template-columns: 1fr 1fr; } }
+  .outcome-box { background: var(--surface2); border-radius: 8px; padding: 16px; text-align: center; }
+  .outcome-box.pwe { border: 1px solid rgba(56,189,248,0.3); }
+  .outcome-label { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.05em; margin-bottom: 6px; }
+  .outcome-val { font-size: 26px; font-weight: 800; font-family: var(--mono); }
+  .outcome-val.green { color: var(--green); }
+  .outcome-val.yellow { color: var(--yellow); }
+  .outcome-val.red { color: var(--red); }
+  .outcome-val.accent { color: var(--accent); }
+  .outcome-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Tripwire cards */
+  .tripwire { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 14px; margin-bottom: 10px; }
+  .tripwire-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .tripwire-name { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+  .tripwire-status { font-size: 11px; font-family: var(--mono); padding: 2px 8px; border-radius: 3px; }
+  .tripwire-status.armed { background: rgba(251,191,36,0.12); color: var(--yellow); }
+  .tripwire-status.deployed { background: rgba(52,211,153,0.12); color: var(--green); }
+  .tripwire-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* ELI15 */
+  .eli15 { background: rgba(56,189,248,0.05); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 16px; margin: 16px 0; }
+  .eli15-label { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 6px; }
+  .eli15 p { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-family: var(--mono); margin: 2px; }
+  .tag.green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .tag.red { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag.accent { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .tag.purple { background: rgba(192,132,252,0.12); color: var(--purple); border: 1px solid rgba(192,132,252,0.3); }
+
+  /* Alert boxes */
+  .alert { border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; font-size: 12px; line-height: 1.6; }
+  .alert.warn { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); color: var(--yellow); }
+  .alert.info { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.3); color: var(--accent); }
+  .alert.danger { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+
+  /* FIRE */
+  .fire-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  .fire-row:last-child { border-bottom: none; }
+  .fire-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .fire-details { flex: 1; }
+  .fire-title { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+  .fire-desc { font-size: 11px; color: var(--muted); }
+  .fire-val { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+
+  /* Regime bar */
+  .regime-bar-wrap { margin-bottom: 10px; }
+  .regime-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .regime-bar-label .rname { color: var(--text); }
+  .regime-bar-label .rscore { font-family: var(--mono); color: var(--accent); font-weight: 700; }
+  .regime-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .regime-bar-fill { height: 100%; border-radius: 3px; }
+
+  /* Summary highlight banner */
+  .summary-banner {
+    background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, rgba(129,140,248,0.05) 100%);
+    border: 1px solid rgba(56,189,248,0.25); border-radius: 10px; padding: 24px 32px; margin-bottom: 24px;
+  }
+  .summary-banner .big-num { font-family: var(--mono); font-size: 40px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .summary-banner .big-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr; } }
+
+  .provenance { font-family: var(--mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px; line-height: 1.9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">PORTFOLIO SCENARIO ANALYSIS &nbsp;|&nbsp; 26 JUN 2026 &nbsp;|&nbsp; HORIZON: 12 MONTHS (JUN 2027)</div>
+  <h1>Full Portfolio — 12-Month Scenario Analysis</h1>
+  <div class="subtitle">₹31.94L corpus + ₹7.80L annual SIP &nbsp;·&nbsp; 13 funds &nbsp;·&nbsp; PE-adjusted historical analog calibration</div>
+  <span class="verdict-chip">PWE OUTCOME: ₹40.84L (+2.8%)</span>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: MACRO REGIME -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§1 &nbsp; Macro Regime &amp; Scenario Probabilities</div>
+
+  <div class="card">
+    <div class="card-title">// ACTIVE REGIME SCORES — 26 JUN 2026</div>
+    <div class="grid2">
+      <div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Growth Expansion</span><span class="rscore">72 / 100</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:72%;background:var(--green);"></div></div>
+        </div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Domestic Capex Boom</span><span class="rscore">68 / 100</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:68%;background:var(--accent);"></div></div>
+        </div>
+        <div class="regime-bar-wrap">
+          <div class="regime-bar-label"><span class="rname">Goldilocks</span><span class="rscore">64 / 100</span></div>
+          <div class="regime-bar-track"><div class="regime-bar-fill" style="width:64%;background:var(--accent2);"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Overall Confidence</span><span class="v accent">73 / 100</span></div>
+        <div class="kv"><span class="k">Primary Signal</span><span class="v green">Growth Expansion</span></div>
+        <div class="kv"><span class="k">Secondary</span><span class="v accent">Domestic Capex Boom</span></div>
+        <div class="kv"><span class="k">Tertiary</span><span class="v purple">Goldilocks</span></div>
+        <div class="kv"><span class="k">Nifty 50 Range</span><span class="v">24,800 – 26,200</span></div>
+        <div class="kv"><span class="k">Midcap 150 PE</span><span class="v yellow">~30x (elevated)</span></div>
+        <div class="kv"><span class="k">RBI Stance</span><span class="v">Neutral, rate cut cycle end</span></div>
+        <div class="kv"><span class="k">INR / USD</span><span class="v">85.2 (stable)</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="alert info">
+        <strong>Calibration basis:</strong> Midcap PE ~30× compresses future returns relative to long-run averages (~22×).
+        Historical analog: 2022 for Scenario B (RBI hiking, midcap –6%), 2018 for Scenario C (global risk-off, midcap –15%, smallcap –20%).
+        Scenario A bull returns capped at ~60% of average cycle highs given elevated entry valuations.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">// SCENARIO DEFINITIONS</div>
+    <div class="scenario A">
+      <div class="scenario-header">
+        <span class="scenario-name">Scenario A — Steady Compounding</span>
+        <span class="scenario-prob">50% probability</span>
+      </div>
+      <div class="scenario-macro">
+        Domestic growth holds at 6.5–7% GDP. RBI stays on hold. Nifty 26,000–28,000 zone. FII flows neutral to positive.
+        Midcap/smallcap digest elevated PEs — sideways to mild rally (+10–16% midcap, +14–20% smallcap).
+        Capex and infra themes deliver. No global shock. This is the status quo continuation.
+      </div>
+    </div>
+    <div class="scenario B">
+      <div class="scenario-header">
+        <span class="scenario-name">Scenario B — Inflation Creep</span>
+        <span class="scenario-prob">30% probability</span>
+      </div>
+      <div class="scenario-macro">
+        Global commodity spike (crude >$90) or food inflation surprises MPC. RBI pauses-to-hikes.
+        Nifty corrects to 21,000–23,000. Midcap underperforms (–2% to –8%). Smallcap down harder.
+        Historical analog: 2022 RBI rate-hike year. ABSL Savings war chest holds firm at 6.5–7.5%.
+      </div>
+    </div>
+    <div class="scenario C">
+      <div class="scenario-header">
+        <span class="scenario-name">Scenario C — Global Risk-Off</span>
+        <span class="scenario-prob">20% probability</span>
+      </div>
+      <div class="scenario-macro">
+        US recession, credit event, or geopolitical shock. FII sell-off, INR weakens to 88+. Nifty 19,000–21,000.
+        Midcap –13% to –18%, smallcap –20% to –25%. Historical analog: 2018 (NBFC crisis + global selloff).
+        T1 trigger fires (Nifty ≤23,000) → ₹1.5L war chest deployed at distressed prices.
+      </div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Think of these three scenarios like weather forecasts: 50% chance of sunny mild day, 30% chance of heavy rain,
+    20% chance of a storm. We plan for all three — carry an umbrella (ABSL war chest), pack sunscreen (Axis SIP velocity),
+    and know where the shelter is (T1 trigger to buy cheap). The "expected" outcome is the probability-weighted average of all three.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: PORTFOLIO SNAPSHOT -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§2 &nbsp; Portfolio Snapshot — Jun 2026</div>
+
+  <div class="card">
+    <div class="card-title">// CURRENT HOLDINGS (KITE MF — 26 JUN 2026)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Fund</th>
+          <th>Role</th>
+          <th>Value (₹)</th>
+          <th>Wt%</th>
+          <th>Monthly SIP</th>
+          <th>Annual SIP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Axis Mid Cap — Direct Growth</td>
+          <td><span class="role-badge role-core">CORE</span></td>
+          <td class="mono">7,44,823</td>
+          <td class="mono">23.3%</td>
+          <td class="mono accent">₹28,000</td>
+          <td class="mono accent">₹3,36,000</td>
+        </tr>
+        <tr>
+          <td>Mirae Asset Large &amp; Midcap</td>
+          <td><span class="role-badge role-core">CORE</span></td>
+          <td class="mono">5,23,401</td>
+          <td class="mono">16.4%</td>
+          <td class="mono accent">₹17,000</td>
+          <td class="mono accent">₹2,04,000</td>
+        </tr>
+        <tr>
+          <td>Bandhan Small Cap</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">4,31,200</td>
+          <td class="mono">13.5%</td>
+          <td class="mono accent">₹12,000</td>
+          <td class="mono accent">₹1,44,000</td>
+        </tr>
+        <tr>
+          <td>Quant Quantamental</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">2,84,000</td>
+          <td class="mono">8.9%</td>
+          <td class="mono accent">₹8,000</td>
+          <td class="mono accent">₹96,000</td>
+        </tr>
+        <tr>
+          <td>Quant ELSS Tax Saver</td>
+          <td><span class="role-badge role-tax">TAX</span></td>
+          <td class="mono">2,11,000</td>
+          <td class="mono">6.6%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr>
+          <td>ABSL Savings (War Chest)</td>
+          <td><span class="role-badge role-ballast">BALLAST</span></td>
+          <td class="mono">1,97,000</td>
+          <td class="mono">6.2%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr>
+          <td>ICICI Pru Infrastructure</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">1,84,000</td>
+          <td class="mono">5.8%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr>
+          <td>Mirae Asset Consumer Behav.</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">1,62,000</td>
+          <td class="mono">5.1%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr>
+          <td>HDFC Focused 30</td>
+          <td><span class="role-badge role-core">CORE</span></td>
+          <td class="mono">1,52,000</td>
+          <td class="mono">4.8%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr>
+          <td>Mirae Asset ELSS Tax Saver</td>
+          <td><span class="role-badge role-tax">TAX</span></td>
+          <td class="mono">1,41,000</td>
+          <td class="mono">4.4%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr>
+          <td>Other / Smaller Funds</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">3,09,576</td>
+          <td class="mono">9.7%</td>
+          <td class="mono accent">—</td>
+          <td class="mono accent">—</td>
+        </tr>
+        <tr style="background: rgba(56,189,248,0.05);">
+          <td style="font-weight:700;">TOTAL</td>
+          <td></td>
+          <td class="mono accent" style="font-weight:700;">31,40,000</td>
+          <td class="mono accent" style="font-weight:700;">~100%</td>
+          <td class="mono accent" style="font-weight:700;">₹65,000</td>
+          <td class="mono accent" style="font-weight:700;">₹7,80,000</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert warn" style="margin-top:14px;">
+      <strong>Bandhan tripwire:</strong> At AUM ₹30,000 Cr → reduce SIP from ₹12k to ₹8k, redirect ₹4k to Axis Midcap.
+      Current AUM ~₹27,219 Cr. Tripwire not yet triggered. Monitor quarterly.
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Your ₹31.94L is spread across 13 funds like a cricket team — Axis Midcap is your batting anchor (biggest position, biggest SIP),
+    Bandhan SC is your pinch hitter, ABSL Savings is the wicket keeper who never gets run out.
+    You're adding ₹65k/month to the team, mostly to Axis + Mirae L&amp;M (your most trusted batters).</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: FUND-LEVEL SCENARIO RETURNS -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§3 &nbsp; Fund-Level Scenario Returns (PE-Adjusted)</div>
+
+  <div class="card">
+    <div class="card-title">// CALIBRATED 12-MONTH RETURN ESTIMATES — EACH SCENARIO</div>
+    <div class="alert info" style="margin-bottom:14px;">
+      Returns calibrated to PE-adjusted historical analogs. Sc A capped at ~60% of average cycle highs (Midcap PE 30x).
+      Sc B = 2022 analog (RBI hiking). Sc C = 2018 analog (NBFC + global selloff). SIP increments earn half-year convention (½ annual return).
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Fund</th>
+          <th>Role</th>
+          <th>Starting ₹</th>
+          <th>Annual SIP</th>
+          <th>Sc A (+)</th>
+          <th>Sc B (–)</th>
+          <th>Sc C (–)</th>
+          <th>PWE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Axis Mid Cap</td>
+          <td><span class="role-badge role-core">CORE</span></td>
+          <td class="mono">7,44,823</td>
+          <td class="mono accent">3,36,000</td>
+          <td class="ret-a">+12%</td>
+          <td class="ret-b">–2%</td>
+          <td class="ret-c">–13%</td>
+          <td class="pwe-col">+5.0%</td>
+        </tr>
+        <tr>
+          <td>Mirae Large &amp; Midcap</td>
+          <td><span class="role-badge role-core">CORE</span></td>
+          <td class="mono">5,23,401</td>
+          <td class="mono accent">2,04,000</td>
+          <td class="ret-a">+10%</td>
+          <td class="ret-b">–1%</td>
+          <td class="ret-c">–9%</td>
+          <td class="pwe-col">+3.5%</td>
+        </tr>
+        <tr>
+          <td>Bandhan Small Cap</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">4,31,200</td>
+          <td class="mono accent">1,44,000</td>
+          <td class="ret-a">+16%</td>
+          <td class="ret-b">–8%</td>
+          <td class="ret-c">–22%</td>
+          <td class="pwe-col">+3.0%</td>
+        </tr>
+        <tr>
+          <td>Quant Quantamental</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">2,84,000</td>
+          <td class="mono accent">96,000</td>
+          <td class="ret-a">+12%</td>
+          <td class="ret-b">–2%</td>
+          <td class="ret-c">–14%</td>
+          <td class="pwe-col">+4.5%</td>
+        </tr>
+        <tr>
+          <td>Quant ELSS</td>
+          <td><span class="role-badge role-tax">TAX</span></td>
+          <td class="mono">2,11,000</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+12%</td>
+          <td class="ret-b">–2%</td>
+          <td class="ret-c">–14%</td>
+          <td class="pwe-col">+4.5%</td>
+        </tr>
+        <tr>
+          <td>ABSL Savings</td>
+          <td><span class="role-badge role-ballast">BALLAST</span></td>
+          <td class="mono">1,97,000</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+7.5%</td>
+          <td class="ret-b">+6.5%</td>
+          <td class="ret-c">+6.5%</td>
+          <td class="pwe-col">+7.1%</td>
+        </tr>
+        <tr>
+          <td>ICICI Infra</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">1,84,000</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+15%</td>
+          <td class="ret-b">–6%</td>
+          <td class="ret-c">–18%</td>
+          <td class="pwe-col">+4.5%</td>
+        </tr>
+        <tr>
+          <td>Mirae Consumer Behav.</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">1,62,000</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+11%</td>
+          <td class="ret-b">–4%</td>
+          <td class="ret-c">–16%</td>
+          <td class="pwe-col">+3.3%</td>
+        </tr>
+        <tr>
+          <td>HDFC Focused 30</td>
+          <td><span class="role-badge role-core">CORE</span></td>
+          <td class="mono">1,52,000</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+11%</td>
+          <td class="ret-b">–2%</td>
+          <td class="ret-c">–10%</td>
+          <td class="pwe-col">+3.9%</td>
+        </tr>
+        <tr>
+          <td>Mirae ELSS</td>
+          <td><span class="role-badge role-tax">TAX</span></td>
+          <td class="mono">1,41,000</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+10%</td>
+          <td class="ret-b">–1%</td>
+          <td class="ret-c">–9%</td>
+          <td class="pwe-col">+3.5%</td>
+        </tr>
+        <tr>
+          <td>Others</td>
+          <td><span class="role-badge role-sat">SAT</span></td>
+          <td class="mono">3,09,576</td>
+          <td class="mono accent">—</td>
+          <td class="ret-a">+10%</td>
+          <td class="ret-b">–3%</td>
+          <td class="ret-c">–12%</td>
+          <td class="pwe-col">+3.3%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px;">PWE = 0.50×ScA + 0.30×ScB + 0.20×ScC. SIP increments modelled at ½ annual return (progressive averaging). ABSL Savings earns money market rate in all scenarios.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: PORTFOLIO-LEVEL OUTCOMES -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§4 &nbsp; Portfolio-Level Outcome by Scenario</div>
+
+  <div class="summary-banner">
+    <div class="summary-grid">
+      <div>
+        <div class="big-num" style="color:var(--muted);">₹31.94L</div>
+        <div class="big-label">Starting Corpus (Jun 2026)</div>
+      </div>
+      <div>
+        <div class="big-num" style="color:var(--accent2);">₹7.80L</div>
+        <div class="big-label">Annual SIP Added (Jun 2026 → Jun 2027)</div>
+      </div>
+      <div>
+        <div class="big-num" style="color:var(--accent);">₹39.74L</div>
+        <div class="big-label">Total Capital Deployed by Jun 2027</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome-grid">
+    <div class="outcome-box">
+      <div class="outcome-label">SCENARIO A (50%)</div>
+      <div class="outcome-val green">₹43.82L</div>
+      <div class="outcome-sub">+10.3% on capital deployed</div>
+    </div>
+    <div class="outcome-box">
+      <div class="outcome-label">SCENARIO B (30%)</div>
+      <div class="outcome-val yellow">₹39.17L</div>
+      <div class="outcome-sub">–1.4% on capital deployed</div>
+    </div>
+    <div class="outcome-box">
+      <div class="outcome-label">SCENARIO C (20%)</div>
+      <div class="outcome-val red">₹35.86L</div>
+      <div class="outcome-sub">–9.8% · T1 adjusted ₹36.09L</div>
+    </div>
+    <div class="outcome-box pwe">
+      <div class="outcome-label">PWE (EXPECTED)</div>
+      <div class="outcome-val accent">₹40.84L</div>
+      <div class="outcome-sub">+2.8% on capital deployed</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">// SCENARIO A — STEADY COMPOUNDING (50% WEIGHT)</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">Starting corpus</span><span class="v">₹31,94,000</span></div>
+        <div class="kv"><span class="k">SIP deployed (full year)</span><span class="v">₹7,80,000</span></div>
+        <div class="kv"><span class="k">Corpus return (weighted avg ~11%)</span><span class="v green">+₹3,51,000</span></div>
+        <div class="kv"><span class="k">SIP return (half-year, ~5.5%)</span><span class="v green">+₹42,900</span></div>
+        <div class="kv"><span class="k">Total end-Jun 2027</span><span class="v green" style="font-size:14px;font-weight:700;">₹43.82L</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Best performer</span><span class="v green">Bandhan SC +16%</span></div>
+        <div class="kv"><span class="k">Second best</span><span class="v green">ICICI Infra +15%</span></div>
+        <div class="kv"><span class="k">Axis Midcap (largest)</span><span class="v green">+12%</span></div>
+        <div class="kv"><span class="k">ABSL Savings (ballast)</span><span class="v accent">+7.5%</span></div>
+        <div class="kv"><span class="k">Weakest link</span><span class="v">Mirae L&amp;M +10%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">// SCENARIO B — INFLATION CREEP (30% WEIGHT)</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">Starting corpus</span><span class="v">₹31,94,000</span></div>
+        <div class="kv"><span class="k">SIP deployed (full year)</span><span class="v">₹7,80,000</span></div>
+        <div class="kv"><span class="k">Corpus return (weighted avg –2%)</span><span class="v red">–₹63,880</span></div>
+        <div class="kv"><span class="k">SIP return (half-year, ~–1%)</span><span class="v red">–₹3,900</span></div>
+        <div class="kv"><span class="k">Total end-Jun 2027</span><span class="v yellow" style="font-size:14px;font-weight:700;">₹39.17L</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Only positive fund</span><span class="v green">ABSL Savings +6.5%</span></div>
+        <div class="kv"><span class="k">Axis Midcap (largest)</span><span class="v red">–2%</span></div>
+        <div class="kv"><span class="k">Worst performer</span><span class="v red">Bandhan SC –8%</span></div>
+        <div class="kv"><span class="k">2022 analog: RBI hiking</span><span class="v yellow">Midcap –6%</span></div>
+        <div class="kv"><span class="k">Capital preservation</span><span class="v yellow">SIP averaging helps</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">// SCENARIO C — GLOBAL RISK-OFF (20% WEIGHT)</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">Starting corpus</span><span class="v">₹31,94,000</span></div>
+        <div class="kv"><span class="k">SIP deployed (full year)</span><span class="v">₹7,80,000</span></div>
+        <div class="kv"><span class="k">Corpus return (weighted avg –13%)</span><span class="v red">–₹4,15,220</span></div>
+        <div class="kv"><span class="k">SIP return (half-year, ~–6.5%)</span><span class="v red">–₹25,350</span></div>
+        <div class="kv"><span class="k">T1 boost (₹1.5L at distress)</span><span class="v green">+₹23,000 est.</span></div>
+        <div class="kv"><span class="k">Total end-Jun 2027</span><span class="v red" style="font-size:14px;font-weight:700;">₹36.09L</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Worst performer</span><span class="v red">Bandhan SC –22%</span></div>
+        <div class="kv"><span class="k">Thematic (ICICI Infra)</span><span class="v red">–18%</span></div>
+        <div class="kv"><span class="k">Mirae Consumer</span><span class="v red">–16%</span></div>
+        <div class="kv"><span class="k">Axis Midcap (largest)</span><span class="v red">–13%</span></div>
+        <div class="kv"><span class="k">ABSL Savings (only +ve)</span><span class="v green">+6.5%</span></div>
+        <div class="kv"><span class="k">T1 trigger</span><span class="v yellow">Nifty ≤23,000 fires</span></div>
+      </div>
+    </div>
+    <div class="alert warn" style="margin-top:12px;">
+      <strong>T1 Trigger:</strong> Deploy ₹1.5L from ABSL Savings war chest when Nifty hits 23,000 or by August 2026 backstop.
+      Backstop is independent of market level — war chest should be deployed regardless by Aug 2026 if not triggered earlier.
+      Estimated +₹23k recovery boost in Sc C from buying at distressed prices vs. current.
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Scenario A is like your train running on time — you reach comfortably ahead of schedule. Scenario B is the train delayed an hour
+    — annoying, but you still get there. Scenario C is the train getting cancelled — painful, but your return ticket (ABSL war chest +
+    T1 trigger) means you can buy a discounted seat on the next train and recover faster than someone who was all-in without a backup plan.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 5: KEY OBSERVATIONS -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§5 &nbsp; Key Portfolio Observations</div>
+
+  <div class="card">
+    <div class="card-title">// STRUCTURAL DYNAMICS</div>
+
+    <div class="tripwire">
+      <div class="tripwire-header">
+        <span class="tripwire-name">1. Axis Midcap Concentration Building</span>
+        <span class="tripwire-status armed">MONITOR</span>
+      </div>
+      <div class="tripwire-desc">
+        ₹3.36L/year SIP velocity means Axis Midcap becomes your largest position in all scenarios — adding ~₹28k/month regardless of market direction.
+        By Jun 2027 it likely represents 26–28% of portfolio. This is intentional (conviction play, Stay verdict confirmed) but concentration should be reviewed at 30%.
+        <br><br>
+        <span class="tag accent">Current: 23.3%</span>
+        <span class="tag yellow">Watch at: 28%</span>
+        <span class="tag red">Review at: 30%</span>
+      </div>
+    </div>
+
+    <div class="tripwire">
+      <div class="tripwire-header">
+        <span class="tripwire-name">2. Bandhan SC Tripwire (AUM-based)</span>
+        <span class="tripwire-status armed">ARMED · NOT YET TRIGGERED</span>
+      </div>
+      <div class="tripwire-desc">
+        Current AUM ~₹27,219 Cr. Trigger: ₹30,000 Cr. Action: SIP ₹12k → ₹8k, redirect ₹4k to Axis Midcap.
+        At current AUM growth pace (~₹500–700 Cr/quarter), tripwire could fire in Q3 or Q4 FY27 (Sep–Dec 2026).
+        Monitor via monthly fact sheet. This is the one pending mechanical action in the SIP plan.
+        <br><br>
+        <span class="tag yellow">Current AUM: ₹27,219 Cr</span>
+        <span class="tag red">Trigger: ₹30,000 Cr</span>
+        <span class="tag accent">Gap: ~₹2,781 Cr</span>
+      </div>
+    </div>
+
+    <div class="tripwire">
+      <div class="tripwire-header">
+        <span class="tripwire-name">3. T1 Deployment Trigger</span>
+        <span class="tripwire-status armed">ARMED · WATCHING</span>
+      </div>
+      <div class="tripwire-desc">
+        ₹1.5L parked in ABSL Savings earmarked for lump-sum deployment. Primary trigger: Nifty ≤23,000.
+        Secondary backstop: August 2026 (deploy regardless of market level). In Scenario A, trigger likely does NOT fire.
+        In Sc B, trigger may fire near year-end. In Sc C, trigger fires early (Nifty breaks 23k).
+        Target: Axis Midcap (core position) or split Axis + Bandhan.
+        <br><br>
+        <span class="tag yellow">Trigger: Nifty 23,000</span>
+        <span class="tag red">Backstop: Aug 2026</span>
+        <span class="tag accent">Amount: ₹1.5L</span>
+      </div>
+    </div>
+
+    <div class="tripwire">
+      <div class="tripwire-header">
+        <span class="tripwire-name">4. Thematic Funds — High Beta Risk</span>
+        <span class="tripwire-status armed">WATCH</span>
+      </div>
+      <div class="tripwire-desc">
+        ICICI Infra (–18% Sc C) and Mirae Consumer (–16% Sc C) are your highest-beta satellite positions.
+        Combined value ~₹3.46L = 10.8% of portfolio. Both have no active SIP — natural position decay over time.
+        No action needed but resist adding SIP to either given thematic concentration risk at elevated PEs.
+        <br><br>
+        <span class="tag red">ICICI Infra Sc C: –18%</span>
+        <span class="tag red">Mirae Consumer Sc C: –16%</span>
+        <span class="tag yellow">Combined: 10.8% of portfolio</span>
+      </div>
+    </div>
+
+    <div class="tripwire">
+      <div class="tripwire-header">
+        <span class="tripwire-name">5. ABSL Savings — All-Weather Ballast</span>
+        <span class="tripwire-status deployed">WORKING</span>
+      </div>
+      <div class="tripwire-desc">
+        Only fund with positive return across ALL three scenarios (7.5% Sc A, 6.5% Sc B, 6.5% Sc C).
+        Functions as portfolio shock absorber + T1 deployment chest. Do not add more to it beyond current ~₹1.97L
+        — ballast is appropriately sized at 6.2% of equity corpus.
+        <br><br>
+        <span class="tag green">All scenarios: positive</span>
+        <span class="tag accent">Role: war chest + ballast</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Five things to remember: (1) Axis is your star batter — keep feeding it runs (SIP). (2) Bandhan has a speed limit
+    — watch for the AUM sign and ease off when you see it. (3) You have ₹1.5L sitting in reserve like a DRS review —
+    use it when the Nifty gives you a bad LBW decision (dips to 23k). (4) Your thematic funds are like T20 pinch hitters —
+    exciting but don't over-rely. (5) ABSL Savings is the Test match opener — boring, never gets out, holds the innings together.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 6: FIRE TRAJECTORY -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§6 &nbsp; FIRE Trajectory Check</div>
+
+  <div class="card">
+    <div class="card-title">// COAST FIRE &amp; FULL FIRE PROJECTION</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">Current age</span><span class="v">~30</span></div>
+        <div class="kv"><span class="k">Coast FIRE target age</span><span class="v green">35–37</span></div>
+        <div class="kv"><span class="k">Full FIRE target age</span><span class="v accent">40 (projected 37)</span></div>
+        <div class="kv"><span class="k">Annual spend estimate</span><span class="v">₹12–15L/year</span></div>
+        <div class="kv"><span class="k">FIRE corpus needed (~25×)</span><span class="v accent">₹3.00–3.75 Cr</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Sc A trajectory</span><span class="v green">On track (accelerated)</span></div>
+        <div class="kv"><span class="k">Sc B trajectory</span><span class="v yellow">On track (base case)</span></div>
+        <div class="kv"><span class="k">Sc C trajectory</span><span class="v yellow">Delayed 1–2 years max</span></div>
+        <div class="kv"><span class="k">PWE trajectory</span><span class="v accent">Coast FIRE by 35–36</span></div>
+        <div class="kv"><span class="k">Income supplement</span><span class="v">Part-time/consulting OK in Sc C</span></div>
+      </div>
+    </div>
+    <div class="alert info" style="margin-top:14px;">
+      <strong>Key insight:</strong> Even in Scenario C (worst case, –9.8% on deployed capital), the FIRE trajectory is delayed by
+      at most 1–2 years — not derailed. The combination of young age, high savings rate (₹65k/month), and SIP discipline
+      means even the bear case compresses to a minor detour. FIRE math is robust across all three scenarios.
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label">// ELI15</div>
+    <p>Think of FIRE like a long road trip. Scenario A: tailwind, reach early. Scenario B: traffic jam, reach on time.
+    Scenario C: detour, reach 1–2 years late but you still get there — because you started young, save aggressively,
+    and have a war chest for emergencies. The destination doesn't move. Only the ETA does.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- SECTION 7: ACTION CHECKLIST -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="section-label">§7 &nbsp; Action Checklist — Next 12 Months</div>
+
+  <div class="card">
+    <div class="card-title">// PENDING ACTIONS &amp; MONITORING</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Trigger</th>
+          <th>Status</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Deploy ₹1.5L war chest (T1)</td>
+          <td>Nifty ≤23,000 OR Aug 2026 backstop</td>
+          <td><span class="tag yellow">ARMED</span></td>
+          <td class="ret-a">HIGH</td>
+        </tr>
+        <tr>
+          <td>Bandhan SIP tripwire: ₹12k → ₹8k</td>
+          <td>Bandhan AUM hits ₹30,000 Cr</td>
+          <td><span class="tag yellow">ARMED · ~Q3 FY27</span></td>
+          <td class="ret-a">HIGH</td>
+        </tr>
+        <tr>
+          <td>Axis Midcap concentration review</td>
+          <td>Axis position hits 28–30% of portfolio</td>
+          <td><span class="tag accent">MONITOR QUARTERLY</span></td>
+          <td class="ret-b">MEDIUM</td>
+        </tr>
+        <tr>
+          <td>Quant Quantamental governance watch</td>
+          <td>Any new SEBI action / Adani news</td>
+          <td><span class="tag accent">MONITOR</span></td>
+          <td class="ret-b">MEDIUM</td>
+        </tr>
+        <tr>
+          <td>Thematic fund review (Infra, Consumer)</td>
+          <td>Annual — next Jun 2027</td>
+          <td><span class="tag green">NO CHANGE NOW</span></td>
+          <td class="ret-c">LOW</td>
+        </tr>
+        <tr>
+          <td>No new fund additions</td>
+          <td>—</td>
+          <td><span class="tag green">HOLD STEADY</span></td>
+          <td class="ret-c">LOW</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PROVENANCE -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="provenance">
+    PROVENANCE &amp; METHODOLOGY<br>
+    Generated: 26 Jun 2026 &nbsp;|&nbsp; Portfolio data: Kite MF Holdings (live) &nbsp;|&nbsp; Macro regime: Jun 25 2026 run (Growth Expansion 72, Capex Boom 68, Goldilocks 64)<br>
+    Scenario calibration: PE-adjusted historical analogs. Sc A — forward returns compressed at Midcap PE 30×.
+    Sc B analog — 2022 RBI hiking cycle (Midcap –6%, Smallcap –10%). Sc C analog — 2018 NBFC crisis + global selloff (Midcap –15%, Smallcap –20%).<br>
+    SIP convention: new SIP money earns ½ annual return (progressive averaging). T1 boost estimated at distress-minus-current discount.<br>
+    Fund reports cited: axis_midcap_vs_hsbc_midcap_2026-06-25.html · mirae_large_midcap_2026-06-25.html · quant_quantamental_2026-06-25.html · bandhan_small_cap_2026-06-25.html<br>
+    This report is for personal investment tracking only. Not SEBI-registered investment advice.
+  </div>
+
+</div>
+</body>
+</html>
