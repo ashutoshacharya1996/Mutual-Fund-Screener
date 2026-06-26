@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bandhan Small Cap Fund — Analysis Report | 25 Jun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a; --surface: #111827; --surface2: #1a2235; --border: #1e2d45;
+    --text: #e2e8f0; --muted: #64748b; --accent: #38bdf8; --accent2: #818cf8;
+    --green: #34d399; --red: #f87171; --yellow: #fbbf24; --orange: #fb923c; --purple: #c084fc;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #0d1e0f 0%, #111827 100%); border-bottom: 1px solid var(--border); padding: 28px 40px; }
+  .header-meta { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: var(--muted); }
+  .verdict-chip { display: inline-block; margin-top: 12px; padding: 6px 16px; border-radius: 20px; font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  .verdict-chip.hold { background: rgba(52,211,153,0.12); border: 1px solid var(--green); color: var(--green); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.05em; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } .header { padding: 20px 16px; } .container { padding: 20px 12px; } }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(30,45,69,0.5); }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); font-size: 12px; }
+  .kv .v { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+  .kv .v.green { color: var(--green); } .kv .v.red { color: var(--red); } .kv .v.yellow { color: var(--yellow); } .kv .v.accent { color: var(--accent); }
+  .regime-bar-wrap { margin-bottom: 10px; }
+  .regime-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+  .regime-bar-label .rscore { font-family: var(--mono); color: var(--accent); font-weight: 700; }
+  .regime-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .regime-bar-fill { height: 100%; border-radius: 3px; }
+  .scenario { background: var(--surface2); border-radius: 6px; padding: 14px; margin-bottom: 10px; border-left: 3px solid; }
+  .scenario.A { border-color: var(--green); } .scenario.B { border-color: var(--yellow); } .scenario.C { border-color: var(--red); }
+  .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .scenario-name { font-weight: 600; font-size: 13px; }
+  .scenario-prob { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+  .scenario.A .scenario-prob { color: var(--green); } .scenario.B .scenario-prob { color: var(--yellow); } .scenario.C .scenario-prob { color: var(--red); }
+  .scenario-macro { font-size: 11px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+  .ret-single { background: rgba(10,14,26,0.5); border-radius: 4px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .ret-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .ret-val { font-family: var(--mono); font-size: 15px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 6px 8px; border-bottom: 1px solid rgba(30,45,69,0.4); color: var(--text); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .wt { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  .sector-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-family: var(--mono); }
+  .tag-finance { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .tag-realty { background: rgba(192,132,252,0.15); color: var(--purple); }
+  .tag-banks { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .tag-health { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-fmcg { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-ship { background: rgba(129,140,248,0.15); color: var(--accent2); }
+  .tag-text { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .tag-cash { background: rgba(100,116,139,0.15); color: var(--muted); }
+  .ret-sc { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+  .ret-sc.A { color: var(--green); } .ret-sc.B { color: var(--yellow); } .ret-sc.C { color: var(--red); }
+  .pwe-box { background: var(--surface2); border-radius: 8px; padding: 20px; text-align: center; border: 1px solid rgba(52,211,153,0.3); }
+  .pwe-fund { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .pwe-val { font-size: 36px; font-weight: 800; font-family: var(--mono); color: var(--green); }
+  .pwe-label { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-family: var(--mono); margin: 2px; }
+  .tag.green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .tag.red { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tag.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .tag.blue { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .verdict-banner { background: linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(56,189,248,0.05) 100%); border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 28px 32px; margin-bottom: 16px; text-align: center; }
+  .verdict-banner .verdict { font-size: 32px; font-weight: 800; color: var(--green); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+  .verdict-banner .verdict-sub { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+  .verdict-banner .reason { font-size: 13px; color: var(--text); line-height: 1.7; max-width: 720px; margin: 0 auto; }
+  .eli15 { background: linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(129,140,248,0.04) 100%); border: 1px solid rgba(56,189,248,0.2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; }
+  .eli15-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .eli15-label .emoji { font-size: 14px; }
+  .eli15 p { font-size: 13px; color: #cbd5e1; line-height: 1.75; margin-bottom: 6px; }
+  .eli15 p:last-child { margin-bottom: 0; }
+  .eli15 strong { color: var(--text); }
+  .eli15 .highlight { color: var(--green); font-weight: 600; }
+  .eli15 .warn { color: var(--yellow); font-weight: 600; }
+  .eli15 .danger { color: var(--red); font-weight: 600; }
+  .provenance-note { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 24px; font-family: var(--mono); }
+  .provenance-note strong { color: var(--text); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  .sector-bar-wrap { margin-bottom: 8px; }
+  .sector-bar-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 12px; }
+  .sector-bar-label .sname { color: var(--muted); }
+  .sector-bar-label .spct { font-family: var(--mono); color: var(--text); font-size: 11px; }
+  .sector-bar-track { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .sector-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), var(--accent)); }
+  .risk-box { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.25); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .risk-box-title { font-family: var(--mono); font-size: 11px; color: var(--red); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">MUTUAL FUND SCREENER &nbsp;·&nbsp; ASHUTOSH, 29, BHUBANESWAR &nbsp;·&nbsp; FIRE AGE 40 &nbsp;·&nbsp; RUN DATE: 25 JUN 2026 &nbsp;·&nbsp; CLAUDE-SONNET-4-6</div>
+  <h1>Bandhan Small Cap Fund</h1>
+  <div class="subtitle">Single-fund analysis &nbsp;·&nbsp; Regime-adjusted &nbsp;·&nbsp; 11-year FIRE horizon &nbsp;·&nbsp; Three-scenario PWE &nbsp;·&nbsp; Formerly: IDFC Small Cap Fund</div>
+  <div class="verdict-chip hold">HOLD — SUITABLE FOR SMALL ALLOCATION (&lt;20% of equity)</div>
+</div>
+
+<div class="container">
+
+  <!-- MACRO CONTEXT -->
+  <div class="section-label">AGENT A &mdash; MACRO CONTEXT (25 JUN 2026)</div>
+  <div class="card">
+    <div class="card-title">ACTIVE REGIME — GROWTH EXPANSION (PRIMARY SCORE 72/100)</div>
+    <div class="grid2">
+      <div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Growth Expansion <strong style="color:var(--green);font-size:10px">PRIMARY</strong></span><span class="rscore">72</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:72%;background:linear-gradient(90deg,#34d399,#059669)"></div></div></div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Domestic Capex Boom</span><span class="rscore">68</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:68%;background:linear-gradient(90deg,#38bdf8,#0284c7)"></div></div></div>
+        <div class="regime-bar-wrap"><div class="regime-bar-label"><span>Stagflation Risk</span><span class="rscore">38</span></div><div class="regime-bar-track"><div class="regime-bar-fill" style="width:38%;background:linear-gradient(90deg,#fbbf24,#d97706)"></div></div></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">GDP FY26</span><span class="v green">7.7% (accelerating)</span></div>
+        <div class="kv"><span class="k">CPI May 2026</span><span class="v yellow">3.93% (5-mo rising trend)</span></div>
+        <div class="kv"><span class="k">RBI Repo</span><span class="v accent">5.25% Neutral / Holding</span></div>
+        <div class="kv"><span class="k">India VIX</span><span class="v green">12.95 (low volatility)</span></div>
+        <div class="kv"><span class="k">Regime Confidence</span><span class="v accent">73 / 100 — Medium-High</span></div>
+        <div class="kv"><span class="k">Stagflation Tail Risk</span><span class="v yellow">20% probability</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FORWARD SCENARIOS — SMALL CAP RETURNS ARE HIGH BETA</div>
+    <div class="scenario A">
+      <div class="scenario-header"><span class="scenario-name">Scenario A — Steady Compounding</span><span class="scenario-prob">50%</span></div>
+      <div class="scenario-macro">GDP 7.5% · CPI 4.2% · RBI holds · G-Sec 6.9% · USD/INR 92 · Brent $70 · VIX stays low</div>
+      <div class="ret-single"><span class="ret-label">BANDHAN SMALL CAP — RANGE</span><span class="ret-val" style="color:var(--green)">15% – 28% &nbsp;<span style="font-size:12px;color:var(--muted)">exp 20%</span></span></div>
+    </div>
+    <div class="scenario B">
+      <div class="scenario-header"><span class="scenario-name">Scenario B — Inflation Creep</span><span class="scenario-prob">30%</span></div>
+      <div class="scenario-macro">GDP 6.8% · CPI 5.3% · RBI hikes +25bp · G-Sec 7.5% · USD/INR 97 · Brent $82</div>
+      <div class="ret-single"><span class="ret-label">BANDHAN SMALL CAP — RANGE</span><span class="ret-val" style="color:var(--yellow)">−8% – 4% &nbsp;<span style="font-size:12px;color:var(--muted)">exp −2%</span></span></div>
+    </div>
+    <div class="scenario C">
+      <div class="scenario-header"><span class="scenario-name">Scenario C — Global Risk-Off</span><span class="scenario-prob">20%</span></div>
+      <div class="scenario-macro">GDP 6.2% · CPI 5.8% · RBI hikes · G-Sec 8.0% · USD/INR 100 · Brent $90</div>
+      <div class="ret-single"><span class="ret-label">BANDHAN SMALL CAP — RANGE</span><span class="ret-val" style="color:var(--red)">−20% – −5% &nbsp;<span style="font-size:12px;color:var(--muted)">exp −12%</span></span></div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHY SMALL CAP RANGES ARE SO WIDE</div>
+    <p>Small cap stocks are like <strong>small boats in an ocean</strong>. When the sea is calm (Scenario A), they zip around fast — small companies can grow much faster than large ones. But when the ocean gets rough (Scenarios B and C), small boats get thrown around much harder than large ships. That's why the range is 15–28% in the good scenario and −20% to −5% in the bad one.</p>
+    <p>This isn't a bug — it's the design. <span class="highlight">Over 11 years, you ride out multiple cycles</span>. Small caps that survive the rough patches tend to massively outperform over long time horizons. Your 11-year FIRE horizon is actually one of the better arguments <em>for</em> owning some small cap exposure — <strong>as long as you can genuinely not panic and sell during a -20% year.</strong></p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT B -->
+  <div class="section-label">AGENT B &mdash; FUND MANAGER ASSESSMENT</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">FUND PROFILE</div>
+      <div class="kv"><span class="k">AUM (estimated)</span><span class="v accent">~₹27,219 cr</span></div>
+      <div class="kv"><span class="k">Expense Ratio (direct)</span><span class="v green">0.33% — best-in-class</span></div>
+      <div class="kv"><span class="k">Category</span><span class="v">Small Cap</span></div>
+      <div class="kv"><span class="k">Benchmark</span><span class="v">Nifty Smallcap 250</span></div>
+      <div class="kv"><span class="k">1Y Return</span><span class="v yellow">9.86%</span></div>
+      <div class="kv"><span class="k">3Y Return</span><span class="v green">29.61%</span></div>
+      <div class="kv"><span class="k">5Y Return</span><span class="v green">22.09% CAGR</span></div>
+      <div class="kv"><span class="k">Category Rank</span><span class="v green">#1 of 22 small cap funds</span></div>
+      <div class="kv"><span class="k">Exit Load</span><span class="v yellow">1% within 1 year</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">MANAGER PROFILE</div>
+      <div class="kv"><span class="k">Lead / CIO</span><span class="v">Manish Gunwani</span></div>
+      <div class="kv"><span class="k">Gunwani tenure here</span><span class="v yellow">Since Jan 2023 (~3.5Y)</span></div>
+      <div class="kv"><span class="k">Gunwani experience</span><span class="v green">30+ years total</span></div>
+      <div class="kv"><span class="k">Prior roles</span><span class="v green">Nippon India CIO · ICICI Prudential Dep CIO</span></div>
+      <div class="kv"><span class="k">Co-managers</span><span class="v">Kirthi Jain · Ritika Behera · Gaurav Satra</span></div>
+      <div class="kv"><span class="k">Philosophy</span><span class="v">GARP · Deep value · Target 2× in 3–4Y</span></div>
+      <div class="kv"><span class="k">Manager Score</span><span class="v green">7 / 10</span></div>
+      <div class="kv"><span class="k">Key Person Risk</span><span class="v green">Low (4-person team)</span></div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;">
+    <div class="tag green">0.33% expense — lowest in small cap category</div>
+    <div class="tag green">Ranked #1 of 22 small cap funds</div>
+    <div class="tag green">Gunwani: 30+ years across Nippon, ICICI Pru, Bandhan</div>
+    <div class="tag green">185–239 stocks — extreme diversification, reduces single-stock risk</div>
+    <div class="tag yellow">Manager tenure at this fund: 3.5Y — limited track record here specifically</div>
+    <div class="tag yellow">13% cash buffer — good for flexibility, slight return drag</div>
+    <div class="tag red">Formerly IDFC Small Cap — strategy continuity must be assumed, not proven</div>
+    <div class="tag red">Very High risk rating — Morningstar</div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE FUND MANAGER</div>
+    <p>Manish Gunwani is a heavy hitter. He previously managed over ₹1.2 lakh crore in equity at Nippon India — that's one of the biggest equity books in India. He knows how to manage large money, how to think about risk, and has seen multiple market cycles. <strong>He's been at Bandhan for 3.5 years</strong> — enough to have reshaped the portfolio his way and delivered 29.61% in 3 years. That's exceptional.</p>
+    <p>The fund used to be called IDFC Small Cap. When Bandhan acquired it in 2023 and brought in Gunwani, the investment approach shifted to a GARP model — <strong>"Growth at Reasonable Price"</strong>. In simple terms: find small companies that are growing fast but haven't become expensive yet. That's a sensible small-cap strategy.</p>
+    <p>The <span class="highlight">0.33% expense ratio</span> is genuinely impressive for an actively managed small cap fund. Every 0.1% saved on fees compounds for free over 11 years. <span class="warn">The only watch-out</span>: this specific fund + this specific manager combination is relatively young (3.5Y). The model works, the track record is excellent — but we'd want to see it survive one full downturn before calling it bulletproof.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT C -->
+  <div class="section-label">AGENT C &mdash; HOLDINGS LOOK-THROUGH</div>
+
+  <div class="card">
+    <div class="card-title">TOP 10 HOLDINGS (17 Jun 2026) — TOP 10 = ~18% of fund (ultra-diversified)</div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>HOLDING</th><th>WT%</th><th>SECTOR</th><th>PE (est)</th><th>ROCE (est)</th><th>MOMENTUM</th><th>Sc A</th><th>Sc B</th><th>Sc C</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Triparty Repo (Cash)</td><td class="wt">13.98%</td><td><span class="sector-tag tag-cash">Cash/Liquid</span></td><td>—</td><td>—</td><td>—</td><td class="ret-sc A">0</td><td class="ret-sc B">0</td><td class="ret-sc C">0</td></tr>
+        <tr><td>2</td><td>REC Ltd</td><td class="wt">3.49%</td><td><span class="sector-tag tag-finance">Finance/PSU</span></td><td>~8x</td><td>~15%</td><td><span style="color:var(--green);font-size:11px">Accelerating</span></td><td class="ret-sc A">[18,26]</td><td class="ret-sc B">[-4,4]</td><td class="ret-sc C">[-10,-2]</td></tr>
+        <tr><td>3</td><td>Sobha Ltd</td><td class="wt">3.28%</td><td><span class="sector-tag tag-realty">Realty</span></td><td>~25x</td><td>~12%</td><td><span style="color:var(--green);font-size:11px">Accelerating</span></td><td class="ret-sc A">[22,35]</td><td class="ret-sc B">[-8,2]</td><td class="ret-sc C">[-20,-8]</td></tr>
+        <tr><td>4</td><td>LT Foods</td><td class="wt">2.14%</td><td><span class="sector-tag tag-fmcg">FMCG/Staples</span></td><td>~18x</td><td>~20%</td><td><span style="color:var(--accent);font-size:11px">Stable</span></td><td class="ret-sc A">[14,20]</td><td class="ret-sc B">[8,14]</td><td class="ret-sc C">[2,8]</td></tr>
+        <tr><td>5</td><td>South Indian Bank</td><td class="wt">1.66%</td><td><span class="sector-tag tag-banks">Small Pvt Bank</span></td><td>~8x</td><td>~14%</td><td><span style="color:var(--accent);font-size:11px">Stable</span></td><td class="ret-sc A">[16,22]</td><td class="ret-sc B">[-4,3]</td><td class="ret-sc C">[-12,-4]</td></tr>
+        <tr><td>6</td><td>PNB Housing Finance</td><td class="wt">1.66%</td><td><span class="sector-tag tag-finance">Finance/NBFC</span></td><td>~10x</td><td>~12%</td><td><span style="color:var(--green);font-size:11px">Accelerating</span></td><td class="ret-sc A">[18,28]</td><td class="ret-sc B">[-6,2]</td><td class="ret-sc C">[-15,-5]</td></tr>
+        <tr><td>7</td><td>Arvind Ltd</td><td class="wt">1.55%</td><td><span class="sector-tag tag-text">Textiles</span></td><td>~20x</td><td>~15%</td><td><span style="color:var(--accent);font-size:11px">Stable</span></td><td class="ret-sc A">[14,22]</td><td class="ret-sc B">[-5,3]</td><td class="ret-sc C">[-15,-5]</td></tr>
+        <tr><td>8</td><td>Great Eastern Shipping</td><td class="wt">1.32%</td><td><span class="sector-tag tag-ship">Shipping</span></td><td>~6x</td><td>~18%</td><td><span style="color:var(--accent);font-size:11px">Stable</span></td><td class="ret-sc A">[16,24]</td><td class="ret-sc B">[-2,6]</td><td class="ret-sc C">[-10,-2]</td></tr>
+        <tr><td>9</td><td>Karnataka Bank</td><td class="wt">1.29%</td><td><span class="sector-tag tag-banks">Small Pvt Bank</span></td><td>~7x</td><td>~13%</td><td><span style="color:var(--accent);font-size:11px">Stable</span></td><td class="ret-sc A">[14,20]</td><td class="ret-sc B">[-5,2]</td><td class="ret-sc C">[-12,-4]</td></tr>
+        <tr><td>10</td><td>Yatharth Hospital</td><td class="wt">1.27%</td><td><span class="sector-tag tag-health">Healthcare</span></td><td>~30x</td><td>~16%</td><td><span style="color:var(--green);font-size:11px">Accelerating</span></td><td class="ret-sc A">[18,28]</td><td class="ret-sc B">[4,12]</td><td class="ret-sc C">[-4,4]</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted)">185–239 total stocks. Remaining ~82% of equity AUM spread across small cap universe. Top 10 equity positions = ~18%.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SECTOR ALLOCATION (Equity Portion)</div>
+    <div class="grid2">
+      <div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Finance</span><span class="spct">13.3%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:13.3%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Pharma &amp; Healthcare</span><span class="spct">11.1%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:11.1%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Realty</span><span class="spct">8.7%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:8.7%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Banking</span><span class="spct">7.9%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:7.9%"></div></div></div>
+      </div>
+      <div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Chemicals</span><span class="spct">5.8%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:5.8%"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Cash / Liquid</span><span class="spct">13.98%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:14%;background:linear-gradient(90deg,var(--muted),var(--border))"></div></div></div>
+        <div class="sector-bar-wrap"><div class="sector-bar-label"><span class="sname">Other (49% in 180+ stocks)</span><span class="spct">~39%</span></div><div class="sector-bar-track"><div class="sector-bar-fill" style="width:39%"></div></div></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="tag green">Mandate Integrity 8/10 — Clean, GARP approach maintained</div>
+      <div class="tag green">No sector concentration — max single sector ~13%</div>
+      <div class="tag yellow">13.98% cash — return drag but protects in downturns</div>
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — WHAT'S INSIDE THE FUND</div>
+    <p>The top "holding" is actually cash (13.98%) — the fund manager is keeping a good chunk in liquid form. This is <strong>Gunwani being cautious at current valuations</strong>. It means in a sudden crash, he can deploy that cash to buy quality small caps at cheap prices. In the meantime, it's a slight drag on returns when markets are rising — an acceptable trade-off.</p>
+    <p>The actual equity holdings are refreshingly boring: REC (a power sector lender), Sobha (a solid real estate developer), LT Foods (Basmati rice brand), and a mix of small private banks, shipping, textiles, and healthcare. <strong>No hot themes. No trendy tech names. Just under-researched businesses with good fundamentals.</strong> That's exactly what GARP investing looks like.</p>
+    <p>The big deal here is the <span class="highlight">extreme diversification</span> — 185 to 239 stocks. No single stock can blow up your portfolio. The risk in this fund isn't "company X fails." The risk is "the entire small cap universe falls 30% in a bad market." That's a different, more manageable kind of risk for a long-horizon investor.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AGENT D -->
+  <div class="section-label">AGENT D &mdash; FUND SYNTHESIS</div>
+
+  <div style="margin-bottom:20px;display:flex;justify-content:center;">
+    <div class="pwe-box" style="min-width:320px;">
+      <div class="pwe-fund">PROBABILITY-WEIGHTED EXPECTED RETURN</div>
+      <div class="pwe-val">7.0%</div>
+      <div class="pwe-label">0.50×20 + 0.30×(−2) + 0.20×(−12) + manager adj 0%</div>
+    </div>
+  </div>
+
+  <div class="risk-box">
+    <div class="risk-box-title">IMPORTANT: PWE IS MISLEADING FOR SMALL CAPS — READ THIS</div>
+    <p style="font-size:12px;color:#cbd5e1;line-height:1.7">The 7.0% PWE for a small cap fund understates the expected outcome for a patient 11-year investor. PWE calculates a single-year expected return. Small cap funds are <strong>non-linear over time</strong>: the worst years (Sc B, Sc C) are painful but temporary — small caps recover faster and higher after crashes. A proper 11-year small cap expectation model would show meaningfully higher terminal wealth than the linear projection implies, because it captures the compounding of recovery years. Use the 11Y multiplier with caution — the real range is wider in both directions.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SYNTHESIS SCORECARD</div>
+    <div class="grid2">
+      <div>
+        <div class="kv"><span class="k">PWE (annual, single-year)</span><span class="v green">7.0%</span></div>
+        <div class="kv"><span class="k">Manager Adjustment</span><span class="v">0% (score 7/10)</span></div>
+        <div class="kv"><span class="k">Downside (Sc C expected)</span><span class="v red">−12%</span></div>
+        <div class="kv"><span class="k">Upside (Sc A expected)</span><span class="v green">20%</span></div>
+        <div class="kv"><span class="k">Return Dispersion</span><span class="v red">32 ppt — Very Wide</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">Style-Regime Alignment</span><span class="v green">Strong Sc A · Weak Sc B/C</span></div>
+        <div class="kv"><span class="k">Mandate Integrity</span><span class="v green">Clean 8/10</span></div>
+        <div class="kv"><span class="k">Category Prior (Small Cap)</span><span class="v yellow">Elevated current valuations</span></div>
+        <div class="kv"><span class="k">Linear 11Y Multiplier</span><span class="v green">(1.070)^11 = 2.10×</span></div>
+        <div class="kv"><span class="k">Recommended Portfolio Weight</span><span class="v yellow">&lt;20% of equity allocation</span></div>
+        <div class="kv"><span class="k">Verdict</span><span class="v green">HOLD — SUITABLE FOR SMALL ALLOCATION</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-banner">
+    <div class="verdict">HOLD</div>
+    <div class="verdict-sub">Excellent fund for its category. Suitable as 15–20% of equity allocation for Ashutosh's profile. Not a replacement for core mid cap.</div>
+    <div class="reason">
+      Bandhan Small Cap is the best small cap fund in its category by returns, has a razor-thin expense ratio (0.33%), and is managed by an experienced team with a sensible GARP philosophy. The 185+ stock diversification means single-company blow-ups can't derail the portfolio. The risk is systemic — small caps as a category fall hard in Scenarios B and C — which is why this should be a <strong>satellite holding, not a core</strong>. For Ashutosh's 11-year FIRE horizon, 15–20% equity allocation to this fund makes sense. Beyond 20%, the portfolio's overall volatility becomes uncomfortable for the FIRE goal. Keep SIP running. Don't add more than your risk tolerance can handle during a −20% year.
+    </div>
+  </div>
+
+  <div class="eli15">
+    <div class="eli15-label"><span class="emoji">💬</span> PLAIN ENGLISH — THE BOTTOM LINE</div>
+    <p>This is a genuinely excellent small cap fund — the best one in its category. <span class="highlight">0.33% expense ratio, #1 rank, 22% in 5 years, 29% in 3 years.</span> Manish Gunwani clearly knows what he's doing, and the GARP approach is sensible and proven.</p>
+    <p>The honest caveat: <strong>small caps are not for the faint of heart.</strong> In a bad year (Scenario C), this fund could fall 15–20% and you would feel terrible. If you'd be tempted to stop your SIP or sell at that point — <span class="warn">don't have more than 15% of your equity in this fund.</span> The worst thing you can do is buy small cap in a bull market and panic-sell in a bear market. That locks in losses and misses the recovery.</p>
+    <p>If you have the stomach to keep the SIP running no matter what — including during a year where you watch your portfolio dip — then this fund deserves a real slot in your portfolio. Over 11 years, the volatility smooths out, and the small cap premium (the extra return you get for taking on that volatility) materializes. <span class="highlight">The key word is patience.</span></p>
+  </div>
+
+  <div class="provenance-note">
+    <strong>DATA PROVENANCE</strong><br>
+    Run date: 25 Jun 2026 · Model: claude-sonnet-4-6 · Macro regime confidence: 73/100 · AUM note: ₹2,02,943 Cr in some sources likely refers to Bandhan AMC total AUM; fund-level AUM estimated ~₹27,219 Cr (ValueResearch). Returns, holdings: Groww, ValueResearch, Bandhan AMC official, TickerTape (Jun 2026) · Holdings date: 17 Jun 2026 · Sector allocation approximate · Scenario return ranges are model estimates for the small cap category.<br><br>
+    <strong>Profile:</strong> Ashutosh · 29 · FIRE age 40 · 11Y runway · Moderate-Aggressive · LTCG 10% / STCG 15% · SIPs never stop · Behavioral flag: action bias (relevant: don't stop SIP when small caps fall)
+  </div>
+
+</div>
+</body>
+</html>
